@@ -10,6 +10,7 @@ public interface Transaction {
 	public static final int WAITING = 2;
 	public static final int COMMITTED = 3;
 	public static final int ROLLBACK = 4;
+	public static final int FINISHED = 5;
 
 	/**
 	 * returns this transaction's id
@@ -54,10 +55,10 @@ public interface Transaction {
 	public void setStatus(int status);
 
 	/**
-	 * partially commits this transaction. This means writing &lt;T commit&gt; 
+	 * commits this transaction. This means writing &lt;T commit&gt; 
 	 * in the recovery log, which implementers must do.
 	 */
-	public void end();
+	public void commit();
 
 	/**
 	 * returns whether this transaction is about to choose to commit or rollback
@@ -83,12 +84,13 @@ public interface Transaction {
 	public int timestamp();
 
 	/**
-	 * commits this transaction
-	 */
-	public void commit();
-
-	/**
 	 * rolls back the changes made by this transaction
 	 */
 	public void rollback();
+
+	/**
+	 * returns whether this transaction is finished
+	 * @return whether this transaction is finished
+	 */
+	public boolean isFinished();
 }

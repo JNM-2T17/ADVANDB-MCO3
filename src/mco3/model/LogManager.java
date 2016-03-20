@@ -66,6 +66,12 @@ public class LogManager {
 		flush();
 	}
 
+	public synchronized void writeAbort(Transaction t) {
+		flush();
+		pw.println(t.transactionId() + " abort");	
+		flush();
+	}
+
 	public synchronized void writeCheckpoint() {
 		flush();
 		pw.println("CHECKPOINT " 

@@ -21,6 +21,7 @@ public abstract class AbstractTransaction implements Transaction {
 		transactionId = id;
 		position = 0;
 		transaction = new ArrayList<DBAction>();
+		transaction.add(new BeginAction(this));
 	}
 
 	/**
@@ -37,7 +38,6 @@ public abstract class AbstractTransaction implements Transaction {
 	 */
 	public void begin() {
 		TransactionManager.instance().register(this);
-		LogManager.instance().writeStart(this);
 	}
 
 	/**
@@ -62,9 +62,14 @@ public abstract class AbstractTransaction implements Transaction {
 	 * executes the next action in this transaction
 	 */
 	public void step() {
-		DBAction dba = getStep(position);
-		position++;
-		dba.execute();
+		if( !isFinished() ) {
+			DBAction dba = getStep(position);
+			position++;
+			dba.execute();
+			if( position == transaction.size() ) {
+				status = FINISHED;
+			}
+		}
 	}
 
 	/**
@@ -83,6 +88,14 @@ public abstract class AbstractTransaction implements Transaction {
 		if( status >= NOT_STARTED && status <= ROLLBACK ) {
 			this.status = status;
 		}
+	}
+
+	/**
+	 * returns whether this transaction is about to choose to commit or rollback
+	 * @return whether this transaction is about to choose to commit or rollback
+	 */
+	public boolean isCommitting() {
+		return transaction.get(position) instanceof CommitAction;
 	}
 
 	/**
@@ -109,8 +122,17 @@ public abstract class AbstractTransaction implements Transaction {
 		return timestamp;
 	}
 
+	/**
+	 * returns whether this transaction is finished
+	 * @return whether this transaction is finished
+	 */
+	public boolean isFinished() {
+		return status == FINISHED;
+	}
+
 	public String toString() {
-		String ret = "";
+		String ret = "Transaction " + transactionId + "\nTimestamp: " 
+						+ timestamp + "\n";
 		for(int i = 0; i < transaction.size(); i++) {
 			if( i > 0 ) {
 				ret += "\n";
