@@ -81,7 +81,7 @@ public class LogManager {
 	 */
 	public synchronized void writeChange(Transaction t, String item
 											, String oldVal, String newVal) {
-		pw.println(t.transactionId() + (char)30 + item + (char)30 + oldVal 
+		pw.println(t.transactionId() + "" + (char)30 + item + (char)30 + oldVal 
 						+ (char)30 + newVal);
 	}
 
