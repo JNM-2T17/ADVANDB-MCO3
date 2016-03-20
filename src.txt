@@ -1,1 +1,5 @@
+"D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\AbstractTransaction.java"
+"D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\DBAction.java"
+"D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\LockManager.java"
+"D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\TimestampManager.java"
 "D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\Transaction.java"

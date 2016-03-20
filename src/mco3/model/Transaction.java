@@ -22,7 +22,7 @@ public interface Transaction {
 	 * @param index index of step
 	 * @return step at index
 	 */
-	public String getStep(int index);
+	public DBAction getStep(int index);
 
 	/**
 	 * executes the next action in this transaction
@@ -36,9 +36,39 @@ public interface Transaction {
 	public int status();
 
 	/**
-	 * partially commits this transaction
+	 * sets the status of this transaction
+	 * @param status status of this transaction
+	 */
+	public void setStatus(int status);
+
+	/**
+	 * partially commits this transaction. This means writing <T commit> in the 
+	 * recovery log, which implementers must do.
 	 */
 	public void end();
+
+	/**
+	 * returns whether this transaction is about to choose to commit or rollback
+	 * @return whether this transaction is about to choose to commit or rollback
+	 */
+	public boolean isCommitting();
+
+	/**
+	 * returns current position in the transaction's steps
+	 * @return current position in the transaction's steps
+	 */
+	public int position();
+
+	/**
+	 * restarts the transaction. Implementers must release all locks.
+	 */
+	public void restart();
+
+	/**
+	 * gets this transaction's timestamp
+	 * @return transaction timestamp
+	 */
+	public int timestamp();
 
 	/**
 	 * commits this transaction
