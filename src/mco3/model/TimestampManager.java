@@ -11,6 +11,7 @@ public class TimestampManager {
 
 	/**
 	 * returns the instance of the Timestamp Manager
+	 * @return the instance of the Timestamp Manager
 	 */
 	public static TimestampManager instance() {
 		if( instance == null ) {

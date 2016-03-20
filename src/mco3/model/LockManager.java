@@ -18,6 +18,7 @@ public class LockManager {
 
 	/**
 	 * returns the instance of the LockManager
+	 * @return the instance of the LockManager
 	 */
 	public synchronized static LockManager instance() {
 		if( instance == null ) {
@@ -44,7 +45,9 @@ public class LockManager {
 					l.getHeadLock().restart();
 				}
 				try {
+					t.setStatus(Transaction.WAITING);
 					wait();
+					t.setStatus(Transaction.RUNNING);
 				} catch(InterruptedException ie) {
 					ie.printStackTrace();
 				}
@@ -70,7 +73,9 @@ public class LockManager {
 					l.getHeadLock().restart();
 				}
 				try {
+					t.setStatus(Transaction.WAITING);
 					wait();
+					t.setStatus(Transaction.RUNNING);
 				} catch(InterruptedException ie) {
 					ie.printStackTrace();
 				}
@@ -98,25 +103,43 @@ public class LockManager {
 		}
 	}
 
-	private class Lock {
+	/**
+	 * class that manages locks on one item
+	 */
+	public class Lock {
 		private int readers;
 		private boolean isWriting;
 		private ArrayList<Transaction> lockers;
 
+		/**
+		 * initializes lock values
+		 */
 		public Lock() {
 			readers = 0;
 			isWriting = false;
 			lockers = new ArrayList<Transaction>();
 		}
 
+		/**
+		 * returns number of transactions reading an item
+		 * @return number of transactions reading an item
+		 */
 		public int readers() {
 			return readers;
 		}
 
+		/**
+		 * returns whether a transaction is writing to the item
+		 * @return whether a transaction is writing to the item
+		 */
 		public boolean isWriting() {
 			return isWriting;
 		}
 
+		/**
+		 * get first transaction to have acquired current lock
+		 * @return first transaction to have acquired current lock
+		 */
 		public Transaction getHeadLock() {
 			if( lockers.size() == 0 ) {
 				return null;
@@ -125,16 +148,29 @@ public class LockManager {
 			}
 		}
 
+		/**
+		 * registers a reader in this lock
+		 * @param t transaction to read the item
+		 */
 		public void addReader(Transaction t) {
 			readers++;
 			lockers.add(t);
 		}
 
+		/**
+		 * unregisters a reader in this lock
+		 * @param t transaction to unregister
+		 */
 		public void subReader(Transaction t) {
 			readers--;
 			lockers.remove(t);
 		}
 
+		/**
+		 * sets whether a given transaction is writing to this item or not
+		 * @param t transaction to set
+		 * @param isWriting whether transaction is writing or not
+		 */
 		public void setWriting(Transaction t,boolean isWriting) {
 			this.isWriting = isWriting;
 			if( isWriting ) {

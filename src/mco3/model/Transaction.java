@@ -42,8 +42,8 @@ public interface Transaction {
 	public void setStatus(int status);
 
 	/**
-	 * partially commits this transaction. This means writing <T commit> in the 
-	 * recovery log, which implementers must do.
+	 * partially commits this transaction. This means writing &lt;T commit&gt; 
+	 * in the recovery log, which implementers must do.
 	 */
 	public void end();
 
