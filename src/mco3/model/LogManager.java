@@ -2,6 +2,10 @@ package mco3.model;
 
 import java.io.*;
 
+/**
+ * Class for manging the recovery log
+ * @author Austin Fernandez
+ */
 public class LogManager {
 	private static LogManager instance = null;
 
@@ -15,6 +19,10 @@ public class LogManager {
 		}
 	}
 
+	/**
+	 * returns an instance of the LogManager
+	 * @return an instance of the LogManager
+	 */
 	public static LogManager instance() {
 		if( instance == null ) {
 			instance = new LogManager();
@@ -22,6 +30,9 @@ public class LogManager {
 		return instance;
 	}
 
+	/**
+	 * Flushes logs to disk
+	 */
 	public synchronized void flush() {
 		try {
 			closeWriter();
@@ -36,7 +47,10 @@ public class LogManager {
 		}
 	}
 
-	public synchronized void flushClear() {
+	/**
+	 * clears the log
+	 */
+	public synchronized void clear() {
 		try {
 			closeWriter();
 		} catch(IOException ioe ) {
@@ -50,28 +64,50 @@ public class LogManager {
 		}
 	}
 
+	/**
+	 * writes a "start" message
+	 * @param t transaction that started
+	 */
 	public synchronized void writeStart(Transaction t) {
 		pw.println(t.transactionId() + " start");
 	}
 
+	/**
+	 * writes a "change" message
+	 * @param t transaction that wrote data
+	 * @param item item that was changed
+	 * @param oldVal old values
+	 * @param newVal new values
+	 */
 	public synchronized void writeChange(Transaction t, String item
 											, String oldVal, String newVal) {
 		pw.println(t.transactionId() + (char)30 + item + (char)30 + oldVal 
 						+ (char)30 + newVal);
 	}
 
+	/**
+	 * writes a "commit" message
+	 * @param t transaction that committed
+	 */
 	public synchronized void writeCommit(Transaction t) {
 		flush();
 		pw.println(t.transactionId() + " commit");	
 		flush();
 	}
 
+	/**
+	 * writes a "abort" message
+	 * @param t transaction that aborted
+	 */
 	public synchronized void writeAbort(Transaction t) {
 		flush();
 		pw.println(t.transactionId() + " abort");	
 		flush();
 	}
 
+	/**
+	 * writes a checkpoint to the log
+	 */
 	public synchronized void writeCheckpoint() {
 		flush();
 		pw.println("CHECKPOINT " 

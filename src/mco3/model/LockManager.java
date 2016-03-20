@@ -43,6 +43,7 @@ public class LockManager {
 				//wound
 				if( t.timestamp() < l.getHeadLock().timestamp() ) {
 					l.getHeadLock().restart();
+					continue;
 				}
 				try {
 					t.setStatus(Transaction.WAITING);
@@ -71,6 +72,7 @@ public class LockManager {
 				//wound
 				if( t.timestamp() < l.getHeadLock().timestamp() ) {
 					l.getHeadLock().restart();
+					continue;
 				}
 				try {
 					t.setStatus(Transaction.WAITING);
@@ -80,7 +82,7 @@ public class LockManager {
 					ie.printStackTrace();
 				}
 			}
-			l.addReader(t);
+			l.setWriting(t,true);
 		}	
 	}
 
@@ -94,6 +96,7 @@ public class LockManager {
 		if( l == null ) {
 			return;
 		} else {
+			System.out.println(l.isWriting());
 			if( l.isWriting() ) {
 				l.setWriting(t,false);
 			} else {

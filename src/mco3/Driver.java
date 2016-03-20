@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Driver {
-	public static void main(String[] args) {
-		// CheckpointManager cm = new CheckpointManager(30000);
-		// cm.start();
+	public static void main(String[] args) throws Exception {
+		CheckpointManager cm = new CheckpointManager(30000);
+		cm.start();
 
-		ArrayList<Transaction> tranList = new ArrayList<Transaction>();
+		final ArrayList<Transaction> tranList = new ArrayList<Transaction>();
 		tranList.add(new ReadDensity2(1,IsoLevel.SERIALIZABLE));
-		tranList.add(new ReadDensity2(2,IsoLevel.READ_REPEATABLE));
-		tranList.add(new ReadDensity2(3,IsoLevel.READ_COMMITTED));
+		tranList.add(new EditAlp(2,IsoLevel.READ_UNCOMMITTED));
+		tranList.add(new EditAlp(3,IsoLevel.READ_COMMITTED));
 		tranList.add(new ReadDensity2(4,IsoLevel.READ_UNCOMMITTED));
 
 		boolean finished;
@@ -35,6 +35,8 @@ public class Driver {
 					}
 					if( i < transactions[j].length) {
 						System.out.print(transactions[j][i]);
+					} else {
+						System.out.print("\t");
 					}
 				}
 				System.out.println();
@@ -42,9 +44,14 @@ public class Driver {
 
 			Scanner sc = new Scanner(System.in);
 			System.out.print("Which transaction? ");
-			int tNo = sc.nextInt() - 1;
+			final int tNo = sc.nextInt() - 1;
 
-			tranList.get(tNo).step();
+			(new Thread(){
+				public void run() {
+					tranList.get(tNo).step();
+				}
+			}).start();
+			Thread.sleep(100);
 
 			finished = true;
 			for(Transaction t : tranList ) {

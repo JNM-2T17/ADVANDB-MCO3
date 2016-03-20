@@ -4,6 +4,7 @@
 "D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\CheckpointManager.java"
 "D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\CommitAction.java"
 "D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\DBAction.java"
+"D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\EditAlp.java"
 "D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\IsoLevel.java"
 "D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\LockManager.java"
 "D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\LogManager.java"

@@ -62,10 +62,12 @@ public abstract class AbstractTransaction implements Transaction {
 	 * executes the next action in this transaction
 	 */
 	public void step() {
-		if( !isFinished() ) {
+		if( !isFinished() && status != WAITING) {
 			DBAction dba = getStep(position);
-			position++;
 			dba.execute();
+			if( status != WAITING ) {
+				position++;
+			}
 			if( position == transaction.size() ) {
 				status = FINISHED;
 			}
@@ -131,7 +133,8 @@ public abstract class AbstractTransaction implements Transaction {
 	}
 
 	public String toString() {
-		String ret = "Transaction " + transactionId + "\nTimestamp: " 
+		String ret = (status == WAITING ? "Wait Tran" : "Transaction ") 
+						+ transactionId + "\nTimestamp: " 
 						+ timestamp + "\n";
 		for(int i = 0; i < transaction.size(); i++) {
 			if( i > 0 ) {

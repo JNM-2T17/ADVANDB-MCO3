@@ -12,3 +12,79 @@ CHECKPOINT
 4 commit
 1 start
 1 commit
+1 start
+3 start
+3 commit
+3 start
+1 start
+2 start
+4 start
+4 commit
+3 start
+1 start
+2 start
+4 start
+4 commit
+3 start
+1 start
+2 start
+4 start
+4 commit
+33hpq_alpval=1000val=2000
+3 commit
+1 commit
+2 commit
+2 start
+3 start
+1 start
+4 start
+4 commit
+32hpq_alpval=1000val=2000
+2 commit
+CHECKPOINT 2,3,1,4
+CHECKPOINT 2,3,1,4
+CHECKPOINT 
+CHECKPOINT 
+2 start
+3 start
+CHECKPOINT 2,3
+2 start
+3 start
+CHECKPOINT 2,3
+CHECKPOINT 2,3
+CHECKPOINT 2,3
+CHECKPOINT 2,3
+2 start
+3 start
+CHECKPOINT 2,3
+CHECKPOINT 2,3
+2 start
+3 start
+CHECKPOINT 2,3
+2 start
+3 start
+1 start
+CHECKPOINT 2,3,1
+CHECKPOINT 2,3,1
+2 start
+3 start
+1 start
+4 start
+4 commit
+32hpq_alpval=1000val=2000
+2 commit
+33hpq_alpval=1000val=2000
+3 commit
+CHECKPOINT 2,3,1,4
+1 commit
+2 start
+3 start
+4 start
+4 commit
+1 start
+32hpq_alpval=1000val=2000
+2 commit
+CHECKPOINT 2,3,4,1
+33hpq_alpval=1000val=2000
+3 commit
+1 commit
