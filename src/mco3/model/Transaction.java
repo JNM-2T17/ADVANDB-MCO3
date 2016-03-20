@@ -12,10 +12,22 @@ public interface Transaction {
 	public static final int ROLLBACK = 4;
 
 	/**
+	 * returns this transaction's id
+	 * @return this transaction's id
+	 */
+	public int transactionId();
+
+	/**
 	 * begins the transaction. This method should assign a timestamp to this 
 	 * transaction
 	 */
 	public void begin();
+
+	/**
+	 * sets this transaction's timestamp
+	 * @param timestamp this transaction's timestamp
+	 */
+	public void setTimestamp(int timestamp);
 
 	/**
 	 * returns the step at the given index

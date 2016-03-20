@@ -7,14 +7,28 @@ import java.util.ArrayList;
  * @author Austin Fernandez
  */
 public abstract class AbstractTransaction implements Transaction {
+	private int transactionId;
 	private int status;
 	private int timestamp;
 	private int position;
 	protected ArrayList<DBAction> transaction;
 
-	public AbstractTransaction() {
+	/**
+	 * basic constructor
+	 * @param id transaction id
+	 */
+	public AbstractTransaction(int id) {
+		transactionId = id;
 		position = 0;
 		transaction = new ArrayList<DBAction>();
+	}
+
+	/**
+	 * returns this transaction's id
+	 * @return this transaction's id
+	 */
+	public int transactionId() {
+		return transactionId;
 	}
 
 	/**
@@ -22,7 +36,16 @@ public abstract class AbstractTransaction implements Transaction {
 	 * transaction
 	 */
 	public void begin() {
-		timestamp = TimestampManager.instance().timestamp();
+		TransactionManager.instance().register(this);
+		LogManager.instance().writeStart(this);
+	}
+
+	/**
+	 * sets this transaction's timestamp
+	 * @param timestamp this transaction's timestamp
+	 */
+	public void setTimestamp(int timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	/**
@@ -84,5 +107,19 @@ public abstract class AbstractTransaction implements Transaction {
 	 */
 	public int timestamp() {
 		return timestamp;
+	}
+
+	public String toString() {
+		String ret = "";
+		for(int i = 0; i < transaction.size(); i++) {
+			if( i > 0 ) {
+				ret += "\n";
+			}
+			if( i == position ) {
+				ret += "> ";
+			} 
+			ret += transaction.get(i);
+		}
+		return ret;
 	}
 }
