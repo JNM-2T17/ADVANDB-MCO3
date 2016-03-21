@@ -2,6 +2,8 @@ package mco3.model;
 
 import java.util.ArrayList;
 
+import mco3.view.Updatable;
+
 /**
  * This class provides a generic implementation for the transaction interface
  * @author Austin Fernandez
@@ -13,6 +15,8 @@ public abstract class AbstractTransaction implements Transaction {
 	private int position;
 	protected ArrayList<DBAction> transaction;
 
+	private Updatable view;
+
 	/**
 	 * basic constructor
 	 * @param id transaction id
@@ -23,6 +27,14 @@ public abstract class AbstractTransaction implements Transaction {
 		status = NOT_STARTED;
 		transaction = new ArrayList<DBAction>();
 		transaction.add(new BeginAction(this));
+	}
+
+	/**
+	 * sets the view that displays this transaction
+	 * @param view view to update
+	 */
+	public void setView(Updatable view) {
+		this.view = view;
 	}
 
 	/**
@@ -40,6 +52,14 @@ public abstract class AbstractTransaction implements Transaction {
 	public void begin() {
 		TransactionManager.instance().register(this);
 		status = RUNNING;
+	}
+
+	/**
+	 * returns number of steps in this transaction
+	 * @return number of steps in this transaction
+	 */
+	public int size() {
+		return transaction.size();
 	}
 
 	/**
@@ -64,15 +84,16 @@ public abstract class AbstractTransaction implements Transaction {
 	 * executes the next action in this transaction
 	 */
 	public void step() {
-		if( !isFinished() && status != WAITING) {
+		if( !isFinished() && status != WAITING ) {
 			DBAction dba = getStep(position);
 			dba.execute();
 			if( status != WAITING ) {
 				position++;
 			}
-			if( position == transaction.size() ) {
+			if( position == size() ) {
 				status = FINISHED;
 			}
+			view.update();
 		}
 	}
 
@@ -89,8 +110,12 @@ public abstract class AbstractTransaction implements Transaction {
 	 * @param status status of this transaction
 	 */
 	public void setStatus(String status) {
-		if( !status.equals(NOT_STARTED) && !status.equals(FINISHED) ) {
-			this.status = status;
+		switch(status) {
+			case NOT_STARTED:
+				break;
+			default:
+				this.status = status;	
+				view.update();
 		}
 	}
 
@@ -116,6 +141,17 @@ public abstract class AbstractTransaction implements Transaction {
 	public void restart() {
 		status = RUNNING;
 		position = 1;
+		releaseLocks();
+		view.update();
+	}
+
+	/**
+	 * rolls back the changes made by this transaction
+	 */
+	public void rollback() {
+		TransactionManager.instance().unregister(this);
+		position = size();
+		status = ROLLBACK;
 	}
 
 	/**
@@ -131,7 +167,16 @@ public abstract class AbstractTransaction implements Transaction {
 	 * @return whether this transaction is finished
 	 */
 	public boolean isFinished() {
-		return status.equals(FINISHED);
+		return status.equals(FINISHED) || status.equals(ROLLBACK);
+	}
+
+	/**
+	 * partially commits this transaction. This means writing &lt;T commit&gt; 
+	 * in the recovery log, which implementers must do.
+	 */
+	public void commit() {
+		TransactionManager.instance().unregister(this);
+		status = COMMIT;
 	}
 
 	public String toString() {

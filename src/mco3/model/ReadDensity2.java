@@ -36,27 +36,11 @@ public class ReadDensity2 extends AbstractTransaction {
 	}
 
 	/**
-	 * partially commits this transaction. This means writing &lt;T commit&gt; 
-	 * in the recovery log, which implementers must do.
+	 * This method must release all locks held by this method
 	 */
-	public void commit() {
-		TransactionManager.instance().unregister(this);
-	}
-
-	/**
-	 * restarts the transaction
-	 */
-	public void restart() {
-		super.restart();
+	public void releaseLocks() {
 		LockManager.instance().unlock(this,"hpq_hh");
 		LockManager.instance().unlock(this,"hpq_crop");
 		LockManager.instance().unlock(this,"hpq_alp");
-	}
-
-	/**
-	 * rolls back the changes made by this transaction
-	 */
-	public void rollback() {
-		setStatus(FINISHED);
 	}
 }

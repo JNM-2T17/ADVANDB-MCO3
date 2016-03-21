@@ -1,5 +1,7 @@
 package mco3.model;
 
+import mco3.view.Updatable;
+
 /**
  * This interface defines a transaction
  * @author Austin Fernandez
@@ -8,7 +10,7 @@ public interface Transaction {
 	public static final String NOT_STARTED = "Pending";
 	public static final String RUNNING = "Running";
 	public static final String WAITING = "Waiting";
-	public static final String COMMITTED = "Commit";
+	public static final String COMMIT = "Commit";
 	public static final String ROLLBACK = "Rollback";
 	public static final String FINISHED = "Finish";
 
@@ -19,10 +21,27 @@ public interface Transaction {
 	public int transactionId();
 
 	/**
+	 * sets the view that displays this transaction
+	 * @param view view to update
+	 */
+	public void setView(Updatable view);
+
+	/**
 	 * begins the transaction. This method should assign a timestamp to this 
 	 * transaction
 	 */
 	public void begin();
+
+	/**
+	 * returns number of steps in this transaction
+	 * @return number of steps in this transaction
+	 */
+	public int size();
+
+	/**
+	 * This method must release all locks held by this method
+	 */
+	public void releaseLocks();
 
 	/**
 	 * sets this transaction's timestamp
