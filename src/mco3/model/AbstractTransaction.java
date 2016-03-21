@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public abstract class AbstractTransaction implements Transaction {
 	private int transactionId;
-	private int status;
+	private String status;
 	private int timestamp;
 	private int position;
 	protected ArrayList<DBAction> transaction;
@@ -20,6 +20,7 @@ public abstract class AbstractTransaction implements Transaction {
 	public AbstractTransaction(int id) {
 		transactionId = id;
 		position = 0;
+		status = NOT_STARTED;
 		transaction = new ArrayList<DBAction>();
 		transaction.add(new BeginAction(this));
 	}
@@ -38,6 +39,7 @@ public abstract class AbstractTransaction implements Transaction {
 	 */
 	public void begin() {
 		TransactionManager.instance().register(this);
+		status = RUNNING;
 	}
 
 	/**
@@ -78,7 +80,7 @@ public abstract class AbstractTransaction implements Transaction {
 	 * returns the current status of this transaction
 	 * @return current status of this transaction
 	 */
-	public int status() {
+	public String status() {
 		return status;
 	}
 
@@ -86,8 +88,8 @@ public abstract class AbstractTransaction implements Transaction {
 	 * sets the status of this transaction
 	 * @param status status of this transaction
 	 */
-	public void setStatus(int status) {
-		if( status >= NOT_STARTED && status <= ROLLBACK ) {
+	public void setStatus(String status) {
+		if( !status.equals(NOT_STARTED) && !status.equals(FINISHED) ) {
 			this.status = status;
 		}
 	}
@@ -129,12 +131,11 @@ public abstract class AbstractTransaction implements Transaction {
 	 * @return whether this transaction is finished
 	 */
 	public boolean isFinished() {
-		return status == FINISHED;
+		return status.equals(FINISHED);
 	}
 
 	public String toString() {
-		String ret = (status == WAITING ? "Wait Tran" : "Transaction ") 
-						+ transactionId + "\nTimestamp: " 
+		String ret = status + " Tran" + transactionId + "\nTimestamp: " 
 						+ timestamp + "\n";
 		for(int i = 0; i < transaction.size(); i++) {
 			if( i > 0 ) {

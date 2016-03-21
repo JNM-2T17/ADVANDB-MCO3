@@ -5,12 +5,12 @@ package mco3.model;
  * @author Austin Fernandez
  */
 public interface Transaction {
-	public static final int NOT_STARTED = 0;
-	public static final int RUNNING = 1;
-	public static final int WAITING = 2;
-	public static final int COMMITTED = 3;
-	public static final int ROLLBACK = 4;
-	public static final int FINISHED = 5;
+	public static final String NOT_STARTED = "Pending";
+	public static final String RUNNING = "Running";
+	public static final String WAITING = "Waiting";
+	public static final String COMMITTED = "Commit";
+	public static final String ROLLBACK = "Rollback";
+	public static final String FINISHED = "Finish";
 
 	/**
 	 * returns this transaction's id
@@ -46,13 +46,13 @@ public interface Transaction {
 	 * returns the current status of this transaction
 	 * @return current status of this transaction
 	 */
-	public int status();
+	public String status();
 
 	/**
 	 * sets the status of this transaction
 	 * @param status status of this transaction
 	 */
-	public void setStatus(int status);
+	public void setStatus(String status);
 
 	/**
 	 * commits this transaction. This means writing &lt;T commit&gt; 

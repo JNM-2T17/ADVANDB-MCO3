@@ -203,3 +203,16 @@ CHECKPOINT 4,1,2
 2 commit
 4 commit
 1 commit
+CHECKPOINT 
+CHECKPOINT 
+1 start
+2 start
+3 start
+4 start
+4 commit
+CHECKPOINT 1,2,3
+2hpq_alpval=1000val=2000
+2 commit
+1 commit
+3hpq_alpval=1000val=2000
+3 commit
