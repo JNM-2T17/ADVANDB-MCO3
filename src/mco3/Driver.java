@@ -11,7 +11,7 @@ public class Driver {
 		cm.start();
 
 		final ArrayList<Transaction> tranList = new ArrayList<Transaction>();
-		tranList.add(new ReadDensity2(1,IsoLevel.SERIALIZABLE));
+		tranList.add(new ReadDensity2(1,IsoLevel.READ_COMMITTED));
 		tranList.add(new EditAlp(2,IsoLevel.READ_UNCOMMITTED));
 		tranList.add(new EditAlp(3,IsoLevel.READ_COMMITTED));
 		tranList.add(new ReadDensity2(4,IsoLevel.READ_UNCOMMITTED));
@@ -27,7 +27,6 @@ public class Driver {
 					max = transactions[i].length;
 				}
 			}
-
 			for(int i = 0; i < max; i++ ) {
 				for(int j = 0; j < transactions.length; j++ ) {
 					if( j > 0 ) {

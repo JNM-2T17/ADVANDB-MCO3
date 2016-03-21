@@ -30,7 +30,7 @@ public class EditAlp extends AbstractTransaction {
 	 * in the recovery log, which implementers must do.
 	 */
 	public void commit() {
-
+		TransactionManager.instance().unregister(this);
 	}
 
 	/**

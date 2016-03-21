@@ -40,7 +40,7 @@ public class ReadDensity2 extends AbstractTransaction {
 	 * in the recovery log, which implementers must do.
 	 */
 	public void commit() {
-
+		TransactionManager.instance().unregister(this);
 	}
 
 	/**

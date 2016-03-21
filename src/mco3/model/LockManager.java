@@ -96,7 +96,6 @@ public class LockManager {
 		if( l == null ) {
 			return;
 		} else {
-			System.out.println(l.isWriting());
 			if( l.isWriting() ) {
 				l.setWriting(t,false);
 			} else {
