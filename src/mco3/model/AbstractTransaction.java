@@ -152,6 +152,7 @@ public abstract class AbstractTransaction implements Transaction {
 		TransactionManager.instance().unregister(this);
 		position = size();
 		status = ROLLBACK;
+		view.update();
 	}
 
 	/**
