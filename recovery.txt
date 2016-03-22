@@ -405,3 +405,14 @@ CHECKPOINT
 3 abort
 4 start
 4 commit
+3 start
+2 start
+1 start
+4 start
+4 commit
+3hpq_alpval=1000val=2000
+3 commit
+2hpq_alpval=1000val=2000
+2 commit
+1 commit
+CHECKPOINT 

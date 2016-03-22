@@ -149,10 +149,13 @@ public abstract class AbstractTransaction implements Transaction {
 	 * rolls back the changes made by this transaction
 	 */
 	public void rollback() {
-		TransactionManager.instance().unregister(this);
+		CheckpointManager.instance().lock();
 		LogManager.instance().writeAbort(this);
-		position = size();
+		//undo transaction
+		TransactionManager.instance().unregister(this);
 		releaseLocks();
+		CheckpointManager.instance().unlock();
+		position = size();
 		status = ROLLBACK;
 		view.update();
 	}

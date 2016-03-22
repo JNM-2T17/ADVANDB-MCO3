@@ -16,7 +16,7 @@ public class MCO3Controller {
 	public MCO3Controller() {
 		mf = new MainFrame();
 
-		cm = new CheckpointManager(30000);
+		cm = CheckpointManager.instance(30000);
 		cm.start();
 
 		tranList = new ArrayList<Transaction>();
