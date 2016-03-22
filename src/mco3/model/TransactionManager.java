@@ -6,7 +6,7 @@ public class TransactionManager {
 	private static TransactionManager instance = null;
 
 	private ArrayList<String> active;
-	private int timestamp;
+	private volatile int timestamp;
 
 	private TransactionManager(int startTimestamp) {
 		timestamp = startTimestamp;
@@ -17,7 +17,7 @@ public class TransactionManager {
 	 * returns the instance of the Timestamp Manager
 	 * @return the instance of the Timestamp Manager
 	 */
-	public static TransactionManager instance() {
+	public synchronized static TransactionManager instance() {
 		if( instance == null ) {
 			instance = new TransactionManager(1);
 		}
@@ -30,7 +30,7 @@ public class TransactionManager {
 	 * @param startTimestamp start timestamp for recovery
 	 * @return the instance of the Timestamp Manager
 	 */
-	public static TransactionManager instance(int startTimestamp) {
+	public synchronized static TransactionManager instance(int startTimestamp) {
 		if( instance == null ) {
 			instance = new TransactionManager(startTimestamp);
 		} else {
@@ -49,6 +49,7 @@ public class TransactionManager {
 	 * @param t transaction to register
 	 */
 	public synchronized void register(Transaction t) {
+		LogManager.instance().writeStart(t);
 		t.setTimestamp(timestamp);
 		timestamp++;
 		active.add(t.transactionId() + "");

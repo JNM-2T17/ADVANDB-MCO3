@@ -6,7 +6,7 @@ import mco3.view.Updatable;
  * This interface defines a transaction
  * @author Austin Fernandez
  */
-public interface Transaction {
+public interface Transaction extends Runnable {
 	public static final String NOT_STARTED = "Pending";
 	public static final String RUNNING = "Running";
 	public static final String WAITING = "Waiting";
@@ -95,6 +95,11 @@ public interface Transaction {
 	 * restarts the transaction. Implementers must release all locks.
 	 */
 	public void restart();
+
+	/**
+	 * undoes all changes done by this transaction so far
+	 */
+	public void undoChanges();
 
 	/**
 	 * gets this transaction's timestamp

@@ -29,6 +29,12 @@ public abstract class AbstractTransaction implements Transaction {
 		transaction.add(new BeginAction(this));
 	}
 
+	public void run() {
+		while(!isFinished()) {
+			step();
+		}
+	}
+
 	/**
 	 * sets the view that displays this transaction
 	 * @param view view to update
@@ -139,10 +145,22 @@ public abstract class AbstractTransaction implements Transaction {
 	 * restarts the transaction
 	 */
 	public void restart() {
+		CheckpointManager.instance().lock();
+		LogManager.instance().writeAbort(this);
+		undoChanges();
+		releaseLocks();
+		LogManager.instance().writeStart(this);
+		CheckpointManager.instance().unlock();
 		status = RUNNING;
 		position = 1;
-		releaseLocks();
 		view.update();
+	}
+
+	/**
+	 * undoes all changes done by this transaction so far
+	 */
+	public void undoChanges() {
+		//TO-DO
 	}
 
 	/**
@@ -151,7 +169,7 @@ public abstract class AbstractTransaction implements Transaction {
 	public void rollback() {
 		CheckpointManager.instance().lock();
 		LogManager.instance().writeAbort(this);
-		//undo transaction
+		undoChanges();
 		TransactionManager.instance().unregister(this);
 		releaseLocks();
 		CheckpointManager.instance().unlock();

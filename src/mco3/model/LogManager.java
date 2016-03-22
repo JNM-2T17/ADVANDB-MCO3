@@ -23,7 +23,7 @@ public class LogManager {
 	 * returns an instance of the LogManager
 	 * @return an instance of the LogManager
 	 */
-	public static LogManager instance() {
+	public synchronized static LogManager instance() {
 		if( instance == null ) {
 			instance = new LogManager();
 		}

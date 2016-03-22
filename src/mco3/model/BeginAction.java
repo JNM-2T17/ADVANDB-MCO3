@@ -18,7 +18,6 @@ public class BeginAction implements DBAction {
 	 * begins the transaction
 	 */
 	public void execute() {
-		LogManager.instance().writeStart(t);
 		t.begin();
 	}
 

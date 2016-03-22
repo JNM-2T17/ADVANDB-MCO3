@@ -21,13 +21,25 @@ public class MCO3Controller {
 
 		tranList = new ArrayList<Transaction>();
 
-		tranList.add(new ReadDensity2(1,IsoLevel.READ_COMMITTED));
-		tranList.add(new EditAlp(2,IsoLevel.READ_UNCOMMITTED));
-		tranList.add(new EditAlp(3,IsoLevel.READ_COMMITTED));
-		tranList.add(new ReadDensity2(4,IsoLevel.READ_UNCOMMITTED));
+		IsoLevel[] isos = new IsoLevel[] {
+			IsoLevel.READ_UNCOMMITTED,
+			IsoLevel.READ_COMMITTED,
+			IsoLevel.READ_REPEATABLE,
+			IsoLevel.SERIALIZABLE
+		};
+
+		int i = 1;
+
+		for( int j = 0; j < isos.length; j++, i += 2 ) {
+			tranList.add(new ReadDensity2(i,isos[j]));
+			tranList.add(new EditAlp(i + 1,isos[j]));
+		}
 
 		cPanel = new ConcurrencyPanel(tranList,this);
 		mf.setMain(cPanel);
+		for(Transaction t : tranList) {
+			(new Thread(t)).start();
+		}
 
 		// boolean finished;
 
