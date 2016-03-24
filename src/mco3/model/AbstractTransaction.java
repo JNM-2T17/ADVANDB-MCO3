@@ -1,5 +1,7 @@
 package mco3.model;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import mco3.view.Updatable;
@@ -14,6 +16,7 @@ public abstract class AbstractTransaction implements Transaction {
 	private int timestamp;
 	private int position;
 	protected ArrayList<DBAction> transaction;
+	protected Connection con;
 
 	private Updatable view;
 
@@ -21,12 +24,29 @@ public abstract class AbstractTransaction implements Transaction {
 	 * basic constructor
 	 * @param id transaction id
 	 */
-	public AbstractTransaction(int id) {
+	public AbstractTransaction(int id,IsoLevel isolevel) throws SQLException {
 		transactionId = id;
 		position = 0;
 		status = NOT_STARTED;
 		transaction = new ArrayList<DBAction>();
 		transaction.add(new BeginAction(this));
+		con = DBManager.getInstance().getConnection();
+		con.setAutoCommit(false);
+		switch(isolevel.level()) {
+			case 1:
+				con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+				break;
+			case 2:
+				con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+				break;
+			case 3:
+				con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+				break;
+			case 4:
+				con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				break;
+			default:
+		}
 	}
 
 	public void run() {
@@ -104,6 +124,14 @@ public abstract class AbstractTransaction implements Transaction {
 	}
 
 	/**
+	 * returns the database connection
+	 * @return the database connection
+	 */
+	public Connection getConnection() {
+		return con;
+	}
+
+	/**
 	 * returns the current status of this transaction
 	 * @return current status of this transaction
 	 */
@@ -145,15 +173,20 @@ public abstract class AbstractTransaction implements Transaction {
 	 * restarts the transaction
 	 */
 	public void restart() {
-		CheckpointManager.instance().lock();
-		LogManager.instance().writeAbort(this);
-		undoChanges();
-		releaseLocks();
-		LogManager.instance().writeStart(this);
-		CheckpointManager.instance().unlock();
-		status = RUNNING;
-		position = 1;
-		view.update();
+		try {
+			CheckpointManager.instance().lock();
+			LogManager.instance().writeAbort(this);
+			con.rollback();
+			undoChanges();
+			releaseLocks();
+			LogManager.instance().writeStart(this);
+			CheckpointManager.instance().unlock();
+			status = RUNNING;
+			position = 1;
+			view.update();
+		} catch(SQLException se) {
+			se.printStackTrace();
+		}
 	}
 
 	/**
@@ -167,15 +200,21 @@ public abstract class AbstractTransaction implements Transaction {
 	 * rolls back the changes made by this transaction
 	 */
 	public void rollback() {
-		CheckpointManager.instance().lock();
-		LogManager.instance().writeAbort(this);
-		undoChanges();
-		TransactionManager.instance().unregister(this);
-		releaseLocks();
-		CheckpointManager.instance().unlock();
-		position = size();
-		status = ROLLBACK;
-		view.update();
+		try {
+			CheckpointManager.instance().lock();
+			LogManager.instance().writeAbort(this);
+			con.rollback();
+			con.close();
+			undoChanges();
+			TransactionManager.instance().unregister(this);
+			releaseLocks();
+			CheckpointManager.instance().unlock();
+			position = size();
+			status = ROLLBACK;
+			view.update();
+		} catch(SQLException se) {
+			se.printStackTrace();
+		}
 	}
 
 	/**
@@ -199,8 +238,14 @@ public abstract class AbstractTransaction implements Transaction {
 	 * in the recovery log, which implementers must do.
 	 */
 	public void commit() {
-		TransactionManager.instance().unregister(this);
-		status = COMMIT;
+		try {
+			con.commit();
+			con.close();
+			TransactionManager.instance().unregister(this);
+			status = COMMIT;
+		} catch(SQLException se) {
+			rollback();
+		}
 	}
 
 	public String toString() {

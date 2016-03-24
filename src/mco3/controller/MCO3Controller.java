@@ -13,7 +13,7 @@ public class MCO3Controller {
 	private MainFrame mf;
 	private ConcurrencyPanel cPanel;
 
-	public MCO3Controller() {
+	public MCO3Controller() throws Exception {
 		mf = new MainFrame();
 
 		cm = CheckpointManager.instance(30000);

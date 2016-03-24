@@ -1,5 +1,7 @@
 package mco3.model;
 
+import java.sql.Connection;
+
 import mco3.view.Updatable;
 
 /**
@@ -60,6 +62,12 @@ public interface Transaction extends Runnable {
 	 * executes the next action in this transaction
 	 */
 	public void step();
+
+	/**
+	 * returns the database connection
+	 * @return the database connection
+	 */
+	public Connection getConnection();
 
 	/**
 	 * returns the current status of this transaction

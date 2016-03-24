@@ -95,7 +95,7 @@ public class LockManager {
 		Lock l = locks.get(item);
 		if( l == null ) {
 			return;
-		} else {
+		} else if( l.isLocking(t) ) {
 			if( l.isWriting() ) {
 				l.setWriting(t,false);
 			} else {
@@ -148,6 +148,10 @@ public class LockManager {
 			} else {
 				return lockers.get(0);
 			}
+		}
+
+		public boolean isLocking(Transaction t) {
+			return lockers.indexOf(t) != -1;
 		}
 
 		/**

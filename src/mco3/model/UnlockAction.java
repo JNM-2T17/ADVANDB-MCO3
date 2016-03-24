@@ -1,5 +1,8 @@
 package mco3.model;
 
+import java.sql.Statement;
+import java.sql.SQLException;
+
 /**
  * Command object that unlocks an item for the given transaction
  */
@@ -22,6 +25,11 @@ public class UnlockAction implements DBAction {
 	 */
 	public void execute() {
 		LockManager.instance().unlock(t,item);
+		try {
+			Statement s = t.getConnection().createStatement();
+			s.executeUpdate("UNLOCK TABLES");
+			s.close();
+		} catch( SQLException se) {}
 	}
 
 	/**

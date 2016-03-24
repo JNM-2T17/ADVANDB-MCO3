@@ -1,5 +1,8 @@
 package mco3.model;
 
+import java.sql.Statement;
+import java.sql.SQLException;
+
 /**
  * Command object that issues a write lock for the given transaction and item
  */
@@ -21,7 +24,15 @@ public class WriteLock implements DBAction {
 	 * requests the write lock
 	 */
 	public void execute() {
-		LockManager.instance().writeLock(t,item);
+		// System.out.println(t.transactionId() + " wl(" + item + ")");
+		// LockManager.instance().writeLock(t,item);
+		try {
+			Statement s = t.getConnection().createStatement();
+			s.executeUpdate("LOCK TABLE " + item + " WRITE");
+			s.close();
+		} catch( SQLException se) {
+			se.printStackTrace();
+		}
 	}
 
 	/**

@@ -1,4 +1,4 @@
-dir src\ /s /B | find ".java" > src.txt && java FixSourceFile src.txt && javac -target 1.7 -source 1.7 -cp bin -d bin @src.txt && java -cp bin mco3.Driver
+dir src\ /s /B | find ".java" > src.txt && java FixSourceFile src.txt && javac -target 1.7 -source 1.7 -cp "bin;JCon.jar" -d bin @src.txt && java -cp "bin;JCon.jar" mco3.Driver
 
 cd bin && jar cvfm "ADVANDB MCO3.jar" manifest.txt mco3 && cd ..
 
