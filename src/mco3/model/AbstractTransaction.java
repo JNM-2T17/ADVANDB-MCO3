@@ -11,12 +11,17 @@ import mco3.view.Updatable;
  * @author Austin Fernandez
  */
 public abstract class AbstractTransaction implements Transaction {
+	public static final int ABORT_NEVER = 0;
+	public static final int ABORT_AFTER = 1;
+	public static final int FAIL_AFTER = 2;
+
 	private int transactionId;
 	private String status;
 	private int timestamp;
 	private int position;
 	protected ArrayList<DBAction> transaction;
 	protected Connection con;
+	private int abort;
 
 	private Updatable view;
 
@@ -47,6 +52,37 @@ public abstract class AbstractTransaction implements Transaction {
 				break;
 			default:
 		}
+		abort = ABORT_NEVER;
+	}
+
+	/**
+	 * basic constructor
+	 * @param id transaction id
+	 */
+	public AbstractTransaction(int id,IsoLevel isolevel,int abort) throws SQLException {
+		transactionId = id;
+		position = 0;
+		status = NOT_STARTED;
+		transaction = new ArrayList<DBAction>();
+		transaction.add(new BeginAction(this));
+		con = DBManager.getInstance().getConnection();
+		con.setAutoCommit(false);
+		switch(isolevel.level()) {
+			case 1:
+				con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+				break;
+			case 2:
+				con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+				break;
+			case 3:
+				con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+				break;
+			case 4:
+				con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				break;
+			default:
+		}
+		this.abort = abort;
 	}
 
 	public void run() {
@@ -201,6 +237,7 @@ public abstract class AbstractTransaction implements Transaction {
 	 */
 	public void rollback() {
 		try {
+			System.out.println("Aborting " + transactionId());
 			CheckpointManager.instance().lock();
 			LogManager.instance().writeAbort(this);
 			con.rollback();
@@ -238,13 +275,21 @@ public abstract class AbstractTransaction implements Transaction {
 	 * in the recovery log, which implementers must do.
 	 */
 	public void commit() {
-		try {
-			con.commit();
-			con.close();
-			TransactionManager.instance().unregister(this);
-			status = COMMIT;
-		} catch(SQLException se) {
+		if( abort == ABORT_AFTER ) {
 			rollback();
+		} else if( abort == FAIL_AFTER ) {
+			System.exit(0);
+		} else {
+			try {
+				System.out.println("Committing " + transactionId() );
+				con.commit();
+				con.close();
+				TransactionManager.instance().unregister(this);
+				status = COMMIT;
+			} catch(SQLException se) {
+				se.printStackTrace();
+				rollback();
+			}
 		}
 	}
 

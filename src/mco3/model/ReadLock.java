@@ -1,6 +1,6 @@
 package mco3.model;
 
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -27,9 +27,10 @@ public class ReadLock implements DBAction {
 		// System.out.println(t.transactionId() + " rl(" + item + ")");
 		// LockManager.instance().readLock(t,item);
 		try {
-			Statement s = t.getConnection().createStatement();
-			s.executeUpdate("LOCK TABLE " + item + " READ");
-			s.close();
+			PreparedStatement ps = t.getConnection().prepareStatement("LOCK TABLES " + item + " READ");
+			System.out.println(ps);
+			ps.execute();
+			ps.close();
 		} catch( SQLException se) {
 			se.printStackTrace();
 		}

@@ -34,6 +34,7 @@ public class MCO3Controller {
 			tranList.add(new ReadDensity2(i,isos[j]));
 			tranList.add(new EditAlp(i + 1,isos[j]));
 		}
+		tranList.add(new EditAlp(9,IsoLevel.READ_UNCOMMITTED,AbstractTransaction.FAIL_AFTER));
 
 		cPanel = new ConcurrencyPanel(tranList,this);
 		mf.setMain(cPanel);

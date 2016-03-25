@@ -2,20 +2,31 @@ package mco3.model;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.PreparedStatement;
 
 public class EditAlp extends AbstractTransaction {
 	public EditAlp(int id, IsoLevel isolation) throws SQLException {
 		super(id,isolation);
 
-		transaction.add(new WriteLock(this,"hpq_alp"));
-		transaction.add(new ReadLock(this,"hpq_crop"));
-		transaction.add(new ReadLock(this,"hpq_hh"));
-		transaction.add(new ReadAction(null,"",null,new String[] {
-			// "hpq_hh",
-			// "hpq_crop",
+		buildTransaction();
+	}
+
+	public EditAlp(int id, IsoLevel isolation,int abort) throws SQLException {
+		super(id,isolation,abort);
+
+		buildTransaction();
+	}
+
+	private void buildTransaction() {
+		transaction.add(new Lock(this,new String[] {
+			"hpq_alp"
+		},new String[] {
+			"WRITE"
+		}));
+		transaction.add(new ReadAction(con,"",null,new String[] {
 			"hpq_alp"
 		}));
-		transaction.add(new WriteAction(this,null,"",null,"val=1000"
+		transaction.add(new WriteAction(this,"UPDATE hpq_alp SET alp_area = alp_area + 10 WHERE hpq_hh_id = 11328",null,"val=1000"
 										,"val=2000","hpq_alp"));
 		transaction.add(new CommitAction(this));
 		transaction.add(new UnlockAction(this,"hpq_alp"));
