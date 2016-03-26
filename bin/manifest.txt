@@ -1,2 +1,3 @@
 Main-Class: mco3.Driver
+Class-Path: JCon.jar
 

@@ -322,3 +322,75 @@ CHECKPOINT
 2 commit
 9hpq_alpval=1000val=2000
 9 commit
+1 start
+2 start
+3 start
+4 start
+6 start
+5 start
+7 start
+8 start
+1 commit
+2hpq_alpval=1000val=2000
+2 commit
+5 abort
+5 start
+7 abort
+7 start
+6 abort
+6 start
+4 abort
+4 start
+6hpq_alpval=1000val=2000
+3 commit
+4hpq_alpval=1000val=2000
+7 commit
+5 commit
+4 commit
+6 commit
+8hpq_alpval=1000val=2000
+8 commit
+1 start
+2 start
+1 commit
+2hpq_alpval=1000val=2000
+2 commit
+3 start
+3 commit
+CHECKPOINT 
+1 start
+2 start
+3 start
+4 start
+7 start
+5 start
+9 start
+8 start
+6 start
+7 commit
+4hpq_alpval=1000val=2000
+4 commit
+6hpq_alpval=1000val=2000
+6 commit
+9hpq_alpval=1000val=2000
+9 commit
+4 start
+1 start
+2 start
+3 start
+5 start
+6 start
+3 commit
+7 start
+9 start
+8 start
+6hpq_alpval=1000val=2000
+6 commit
+4hpq_alpval=1000val=2000
+4 commit
+2hpq_alpval=1000val=2000
+2 commit
+8hpq_alpval=1000val=2000
+8 commit
+9hpq_alpval=1000val=2000
+9 commit
