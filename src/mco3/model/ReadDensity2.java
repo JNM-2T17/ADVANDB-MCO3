@@ -7,6 +7,16 @@ public class ReadDensity2 extends AbstractTransaction {
 	public ReadDensity2(int id, IsoLevel isolation) throws SQLException {
 		super(id,isolation);
 
+		buildTransaction();
+	}
+
+	public ReadDensity2(int id, IsoLevel isolation, int abort) throws SQLException {
+		super(id,isolation,abort);
+
+		buildTransaction();
+	}
+
+	public void buildTransaction() {
 		transaction.add(new Lock(this,new String[] {
 			"hpq_alp",
 			"hpq_crop",

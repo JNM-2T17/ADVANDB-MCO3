@@ -5,23 +5,32 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import mco3.view.ConStatusPanel;
+import mco3.controller.MCO3Controller;
 
 public class ConnectionManager {
 	private static ConnectionManager instance;
 
 	private String schema;
 	private HashMap<String,Socket> sockets;
+	private HashMap<String,DBAction> actions;
+	private ArrayList<String> actKeys;
 	private Receiver r;
 	private ConStatusPanel csPanel;
 	private boolean[] status;
 
-	private ConnectionManager(String schema,ConStatusPanel csPanel) {
+	private MCO3Controller control;
+
+	private ConnectionManager(MCO3Controller control,ConStatusPanel csPanel) {
+		this.control = control;
 		this.csPanel = csPanel;
 		sockets = new HashMap<String,Socket>();
-		this.schema = schema;
+		actions = new HashMap<String,DBAction>();
+		actKeys = new ArrayList<String>();
+		this.schema = control.schema;
 		status = new boolean[3];
 		switch(schema) {
 			case "db_hpq":
@@ -41,10 +50,15 @@ public class ConnectionManager {
 		r.start();
 	}
 
-	public static synchronized ConnectionManager instance(String schema,ConStatusPanel csPanel) {
+	public static synchronized ConnectionManager instance(MCO3Controller control
+													,ConStatusPanel csPanel) {
 		if( instance == null ) {
-			instance = new ConnectionManager(schema,csPanel);
+			instance = new ConnectionManager(control,csPanel);
 		}
+		return instance;
+	}
+
+	public static synchronized ConnectionManager instance() {
 		return instance;
 	}
 
@@ -88,7 +102,7 @@ public class ConnectionManager {
 		}
 	}
 
-	public void register(String tag, Socket registree) {
+	public synchronized void register(String tag, Socket registree) {
 		sockets.put(tag,registree);
 		switch(tag) {
 			case "db_hpq":
@@ -106,7 +120,7 @@ public class ConnectionManager {
 		(new Listener(tag,registree)).start();
 	}
 
-	public void unregister(String tag) {
+	public synchronized void unregister(String tag) {
 		sockets.remove(tag);
 		switch(tag) {
 			case "db_hpq":
@@ -120,23 +134,71 @@ public class ConnectionManager {
 				break;	
 			default:
 		}
+		for( String s : actKeys ) {
+			if( s.endsWith(tag) )  {
+				actions.get(s).wakeUp(false);
+				actions.remove(s);
+			}
+		}
 		csPanel.setModel(status[0],status[1],status[2]);
 		r.wakeUp();
 	}
 
-	public void sendMessage(String tag, String message, String replyHeader) {
+	public synchronized boolean sendMessage(String tag, String message) {
 		Socket s = sockets.get(tag);
-		try {
-			DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-			dos.writeBytes(message);
-			//register replyHeader
-		} catch( Exception e ) {
-			e.printStackTrace();
-		}
+		System.out.println("SENDING " + tag + " " + message);
+		if( s != null ) {
+			try {
+				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+				dos.writeBytes(message);
+				return true;
+			} catch( Exception e ) {
+				e.printStackTrace();	
+			}
+		} 
+		return false;
 	}
 
-	public void processMessage(String tag, String header, String message) {
+	public synchronized boolean sendMessage(String tag, String message, String replyHeader,DBAction dba) {
+		Socket s = sockets.get(tag);
+		System.out.println("SENDING " + tag + " " + message);
+		if( s != null ) {
+			try {
+				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+				dos.writeBytes(message);
+				System.out.println("Waiting for " + replyHeader);
+				actions.put(replyHeader,dba);
+				return true;
+			} catch( Exception e ) {
+				e.printStackTrace();	
+			}
+		} 
+		return false;
+	}
 
+	public synchronized boolean isConnected(String tag) {
+		return sockets.get(tag) != null;
+	}
+
+	public void processMessage(String tag, String header, String id, String message) {
+		System.out.println(tag + " " + header + " " + id + " " + message);
+		switch(header) {
+			case "BEGIN":
+				control.addDummy(id + tag,id,message);
+				break;
+			case "LOCK":
+				control.lock(id,message);
+				System.out.println("SENDING OKLOCK " + id);
+				sendMessage(tag,"OKLOCK " + id + " 0" + (char)30 + (char)40);
+				break;
+			case "OKLOCK":
+				actions.get(header + " " + id).wakeUp(true);
+				actions.remove(header + " " + id);
+				break;
+			case "UNLOCK":
+				control.unlock(id);
+			default:
+		}
 	}
 
 	private class Receiver extends Thread {
@@ -216,9 +278,9 @@ public class ConnectionManager {
 							return;
 						}
 					} while(c != 30);
-					System.out.println(header);
+					// System.out.println(header);
 					//header is type<space>id<space>length
-					String[] parts = header.split(" ");
+					final String[] parts = header.split(" ");
 					int length = Integer.parseInt(parts[2]);
 					byte[] data = new byte[length];
 
@@ -231,8 +293,13 @@ public class ConnectionManager {
 							break;
 						}
 					} while( curr < length );
-					String message = new String(data);
-					processMessage(tag,parts[0] + " " + parts[1],message);
+					final String message = new String(data);
+					dis.readUnsignedByte(); //throw terminator
+					(new Thread(new Runnable() {
+						public void run() {
+							processMessage(tag,parts[0],parts[1],message);
+						}
+					})).start();
 				} catch( Exception e) {
 					e.printStackTrace();
 				}

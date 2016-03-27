@@ -22,6 +22,10 @@ public interface Transaction extends Runnable {
 	 */
 	public int transactionId();
 
+	public IsoLevel isoLevel();
+
+	public int abortStatus();
+
 	/**
 	 * sets the view that displays this transaction
 	 * @param view view to update

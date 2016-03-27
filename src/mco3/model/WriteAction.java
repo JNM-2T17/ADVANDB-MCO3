@@ -27,15 +27,12 @@ public class WriteAction implements DBAction {
 	 * @param newVal new data values
 	 * @param item db item to write
 	 */
-	public WriteAction(Transaction t,String query, String[] params
-						,String oldVal, String newVal, String item) {
+	public WriteAction(Transaction t,String query, String[] params,String item) {
 		this.t = t;
 		this.con = t.getConnection();
 		this.query = query;
 		this.params = params;
 		this.item = item;
-		this.oldVal = oldVal;
-		this.newVal = newVal;
 	}
 
 	/**
@@ -47,6 +44,9 @@ public class WriteAction implements DBAction {
 		LogManager.instance().writeChange(t,item,oldVal,newVal);
 		try {
 			PreparedStatement ps = con.prepareStatement(query);
+			for(int i = 0; i < params.length; i++) {
+				ps.setString(i + 1, params[i]);
+			}
 			System.out.println(ps);
 			ps.execute();
 		} catch(Exception e) {
@@ -57,5 +57,9 @@ public class WriteAction implements DBAction {
 
 	public String toString() {
 		return "write(" + item + ")";
+	}
+
+	public synchronized void wakeUp(boolean status) {
+		notifyAll();
 	}
 }

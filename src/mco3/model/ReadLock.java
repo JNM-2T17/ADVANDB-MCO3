@@ -43,4 +43,8 @@ public class ReadLock implements DBAction {
 	public String toString() {
 		return "rl(" + item + ")";
 	}
+
+	public synchronized void wakeUp(boolean status) {
+		notifyAll();
+	}
 }

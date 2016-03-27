@@ -44,4 +44,8 @@ public class WriteLock implements DBAction {
 	public String toString() {
 		return "wl(" + item + ")";
 	}
+
+	public synchronized void wakeUp(boolean status) {
+		notifyAll();
+	}
 }

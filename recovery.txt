@@ -498,3 +498,98 @@ CHECKPOINT
 CHECKPOINT 
 CHECKPOINT 
 CHECKPOINT 
+1 start
+2 start
+1 commit
+2 start
+2hpq_alpnullnull
+2 commit
+1 start
+3 start
+2 start
+4 start
+5 start
+6 start
+7 start
+9 start
+8 start
+1 commit
+5 commit
+3 commit
+7 commit
+4hpq_alpnullnull
+4 commit
+9hpq_alpnullnull
+9 commit
+9 abort
+2hpq_alpnullnull
+2 commit
+6hpq_alpnullnull
+6 commit
+8hpq_alpnullnull
+8 commit
+1 start
+1 commit
+1 start
+1 commit
+2 start
+2hpq_alpnullnull
+2 commit
+2 start
+2hpq_alpnullnull
+2 commit
+2 start
+2hpq_alpnullnull
+2 commit
+2 start
+2hpq_alpnullnull
+2 commit
+2 start
+2hpq_alpnullnull
+2 commit
+2 start
+2hpq_alpnullnull
+2 commit
+1 start
+1 commit
+2 start
+2 commit
+2 start
+2hpq_alpnullnull
+2 commit
+3 start
+1 start
+1 commit
+2 start
+2hpq_alpnullnull
+2 commit
+3 start
+3 commit
+2 start
+2hpq_alpnullnull
+2 commit
+1 start
+1 commit
+1 start
+1 commit
+2 start
+2hpq_alpnullnull
+2 commit
+2 start
+2hpq_alpnullnull
+2 commit
+2 start
+2hpq_alpnullnull
+2 commit
+2 start
+2hpq_alpnullnull
+2 commit
+3 start
+3 commit
+3 start
+2 start
+3 commit
+4 start
+2 commit
+4hpq_alpnullnull
+4 commit

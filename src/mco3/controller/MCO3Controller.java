@@ -10,7 +10,7 @@ public class MCO3Controller {
 	public static final int ADD = 1;
 	public static final int RUN = 2;
 
-	private String schema;
+	public static String schema;
 
 	private ArrayList<Transaction> tranList;
 	private CheckpointManager cm;
@@ -22,11 +22,14 @@ public class MCO3Controller {
 	private ConnectScreen cFrame;
 	private ConStatusPanel csPanel;
 	private boolean connectOpen;
+	private DummyManager dm;
 
 	public MCO3Controller(String schema) throws Exception {
 		this.schema = schema;
 		DBManager.schema = schema;
 		connectOpen = false;
+
+		dm = new DummyManager();
 
 		mf = new MainFrame();
 
@@ -39,7 +42,7 @@ public class MCO3Controller {
 		// cm = CheckpointManager.instance(30000);
 		// cm.start();
 
-		conM = ConnectionManager.instance(schema,csPanel);
+		conM = ConnectionManager.instance(this,csPanel);
 
 		tranList = new ArrayList<Transaction>();
 
@@ -54,9 +57,9 @@ public class MCO3Controller {
 
 		for( int j = 0; j < isos.length; j++, i += 2 ) {
 			tranList.add(new ReadDensity2(i,isos[j]));
-			tranList.add(new EditAlp(i + 1,isos[j]));
+			tranList.add(new EditAlp(i + 1,isos[j],11328,10));
 		}
-		tranList.add(new EditAlp(9,IsoLevel.READ_UNCOMMITTED,AbstractTransaction.ABORT_AFTER));
+		tranList.add(new EditAlp(9,IsoLevel.READ_UNCOMMITTED,11328,10,AbstractTransaction.ABORT_AFTER));
 
 		cPanel = new ConcurrencyPanel(tranList,this);
 		mf.setMain(cPanel);
@@ -110,6 +113,18 @@ public class MCO3Controller {
 
 	public String schema() {
 		return schema;
+	}
+
+	public void addDummy(String tag, String id, String isolation) {
+		dm.add(tag,id,isolation);
+	}
+
+	public void lock(String tag, String stmt) {
+		dm.lock(tag,stmt);
+	}
+
+	public void unlock(String tag) {
+		dm.unlock(tag);
 	}
 
 	public void setMain(int value) {

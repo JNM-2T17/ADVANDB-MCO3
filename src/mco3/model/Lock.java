@@ -3,6 +3,8 @@ package mco3.model;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import mco3.controller.MCO3Controller;
+
 /**
  * Command object that issues a write lock for the given transaction and item
  */
@@ -25,13 +27,15 @@ public class Lock implements DBAction {
 	/**
 	 * requests the write lock
 	 */
-	public void execute() {
+	public synchronized void execute() {
 		String lock = "LOCK TABLES ";
+		boolean isRead = true;
 		for(int i = 0; i < items.length; i++) {
 			if( i > 0 ) {
 				lock += ",";
 			}
 			lock += items[i] + " " + modes[i];
+			isRead = isRead && modes[i].equals("READ");
 			// if( modes[i].equals("WRITE")) {
 				// System.out.println(t.transactionId() + " wl(" + item + ")");
 				// LockManager.instance().writeLock(t,item);
@@ -40,12 +44,142 @@ public class Lock implements DBAction {
 				// LockManager.instance().readLock(t,item);
 			// }
 		}
+
+		ConnectionManager cm = ConnectionManager.instance();
+		int lockCtr = 0;
 		try {
-			PreparedStatement ps 
-				= t.getConnection().prepareStatement(lock);
-			System.out.println(ps);
-			ps.execute();
-			ps.close();
+			switch(MCO3Controller.schema) {
+				case "db_hpq":
+					PreparedStatement ps 
+						= t.getConnection().prepareStatement(lock);
+					System.out.println(ps);
+					ps.execute();
+					ps.close();
+					if( isRead) {
+						return;
+					}
+
+					if( cm.isConnected("db_hpq_marinduque") ) {
+						cm.sendMessage("db_hpq_marinduque","LOCK " + t.transactionId()
+											 + MCO3Controller.schema
+											 + " " + lock.length() + (char)30 
+											 + lock + (char)4,"OKLOCK " 
+											 + t.transactionId() 
+											 + MCO3Controller.schema,this);
+						try {
+							wait();
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
+					} else if( !isRead ) {
+						t.rollback();
+					}
+					
+					if( cm.isConnected("db_hpq_palawan") ) {
+						cm.sendMessage("db_hpq_palawan","LOCK " + t.transactionId()
+											 + MCO3Controller.schema
+											 + " " + lock.length() + (char)30 
+											 + lock + (char)4,"OKLOCK " 
+											 + t.transactionId() 
+											 + MCO3Controller.schema,this);
+						try {
+							wait();
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
+					} else if( !isRead ) {
+						t.rollback();
+					}
+
+					break;
+				case "db_hpq_marinduque":
+					if( cm.isConnected("db_hpq") ) {
+						cm.sendMessage("db_hpq","LOCK " + t.transactionId()
+											 + MCO3Controller.schema
+											 + " " + lock.length() + (char)30 
+											 + lock + (char)4,"OKLOCK " 
+											 + t.transactionId() 
+											 + MCO3Controller.schema,this);
+						try {
+							wait();
+							if( isRead) {
+								return;
+							}
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
+					} else if( !isRead ) {
+						t.rollback();
+					}
+					
+					ps = t.getConnection().prepareStatement(lock);
+					System.out.println(ps);
+					ps.execute();
+					ps.close();
+					if( isRead ) {
+						return;
+					}
+
+					if( cm.isConnected("db_hpq_palawan") ) {
+						cm.sendMessage("db_hpq_palawan","LOCK " + t.transactionId()
+											 + MCO3Controller.schema
+											 + " " + lock.length() + (char)30 
+											 + lock + (char)4,"OKLOCK " 
+											 + t.transactionId() 
+											 + MCO3Controller.schema,this);
+						try {
+							wait();
+							if( isRead ) {
+								return;
+							}
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
+					} else if( !isRead ) {
+						t.rollback();
+					}
+
+					break;
+				case "db_hpq_palawan":
+					if( cm.isConnected("db_hpq") ) {
+						cm.sendMessage("db_hpq","LOCK " + t.transactionId()
+											 + MCO3Controller.schema
+											 + " " + lock.length() + (char)30 
+											 + lock + (char)4,"OKLOCK " 
+											 + t.transactionId() 
+											 + MCO3Controller.schema,this);
+						try {
+							wait();
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
+					} else if( !isRead ) {
+						t.rollback();
+					}
+
+					if( cm.isConnected("db_hpq_marinduque") ) {
+						cm.sendMessage("db_hpq_marinduque","LOCK " + t.transactionId()
+											 + MCO3Controller.schema
+											 + " " + lock.length() + (char)30 
+											 + lock + (char)4,"OKLOCK " 
+											 + t.transactionId() 
+											 + MCO3Controller.schema,this);
+						try {
+							wait();
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
+					} else if( !isRead ) {
+						t.rollback();
+					}
+
+					ps = t.getConnection().prepareStatement(lock);
+					System.out.println(ps);
+					ps.execute();
+					ps.close();
+					break;
+				default:
+			}
 		} catch( SQLException se) {
 			se.printStackTrace();
 		}
@@ -68,5 +202,13 @@ public class Lock implements DBAction {
 			}
 		}
 		return ret + "</html>";
+	}
+
+	public synchronized void wakeUp(boolean status) {
+		if( status ) {
+			notifyAll();
+		} else {
+			t.rollback();
+		}
 	}
 }

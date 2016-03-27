@@ -54,4 +54,8 @@ public class ReadAction implements DBAction {
 		}
 		return ret + "</html>";
 	}
+
+	public synchronized void wakeUp(boolean status) {
+		notifyAll();
+	}
 }

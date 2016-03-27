@@ -21,7 +21,8 @@ public abstract class AbstractTransaction implements Transaction {
 	private int position;
 	protected ArrayList<DBAction> transaction;
 	protected Connection con;
-	private int abort;
+	protected int abort;
+	private IsoLevel isolation;
 
 	private Updatable view;
 
@@ -31,6 +32,7 @@ public abstract class AbstractTransaction implements Transaction {
 	 */
 	public AbstractTransaction(int id,IsoLevel isolevel) throws SQLException {
 		transactionId = id;
+		isolation = isolevel;
 		position = 0;
 		status = NOT_STARTED;
 		transaction = new ArrayList<DBAction>();
@@ -61,6 +63,7 @@ public abstract class AbstractTransaction implements Transaction {
 	 */
 	public AbstractTransaction(int id,IsoLevel isolevel,int abort) throws SQLException {
 		transactionId = id;
+		isolation = isolevel;
 		position = 0;
 		status = NOT_STARTED;
 		transaction = new ArrayList<DBAction>();
@@ -83,6 +86,14 @@ public abstract class AbstractTransaction implements Transaction {
 			default:
 		}
 		this.abort = abort;
+	}
+
+	public IsoLevel isoLevel() {
+		return isolation;
+	}
+
+	public int abortStatus() {
+		return abort;
 	}
 
 	public void run() {

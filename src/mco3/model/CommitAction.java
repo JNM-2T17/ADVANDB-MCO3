@@ -25,4 +25,8 @@ public class CommitAction implements DBAction {
 	public String toString() {
 		return "COMMIT TRAN";
 	}
+
+	public synchronized void wakeUp(boolean status) {
+		notifyAll();
+	}
 }
