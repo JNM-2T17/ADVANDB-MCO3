@@ -45,13 +45,13 @@ public class ReadAction implements DBAction {
 	}
 
 	public String toString() {
-		String ret = "";
+		String ret = "<html>";
 		for( int i = 0; i < items.length; i++ ) {
 			if( i > 0 ) {
-				ret += ";";
+				ret += "<br/>";
 			}
 			ret += "read(" + items[i] + ")";
 		}
-		return ret;
+		return ret + "</html>";
 	}
 }

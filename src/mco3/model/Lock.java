@@ -56,10 +56,10 @@ public class Lock implements DBAction {
 	 * @return the string representation of this write lock request
 	 */
 	public String toString() {
-		String ret = "";
+		String ret = "<html>";
 		for(int i = 0; i < items.length; i++) {
 			if( i > 0 ) {
-				ret += "<br>";
+				ret += "<br/>";
 			}
 			if( modes[i].equals("WRITE")) {
 				ret += "wl(" + items[i] + ")";
@@ -67,6 +67,6 @@ public class Lock implements DBAction {
 				ret += "rl(" + items[i] + ")";
 			}
 		}
-		return ret;
+		return ret + "</html>";
 	}
 }

@@ -3,6 +3,7 @@ package mco3.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -33,6 +34,7 @@ public class TransactionPanel extends JPanel implements Updatable{
 
 		buttonPanel = Box.createVerticalBox();
 		stepButton = new JButton("Step");
+		stepButton.setFont(new Font("Segoe UI",Font.PLAIN,12));
 		stepButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				control.step(model);
@@ -61,9 +63,11 @@ public class TransactionPanel extends JPanel implements Updatable{
 		Box content = Box.createVerticalBox();
 		JLabel statusLabel = new JLabel(model.status() + " " 
 										+ model.transactionId());
+		statusLabel.setFont(new Font("Segoe UI",Font.BOLD,12));
 		content.add(statusLabel);
 		// content.add(Box.createVerticalStrut(5));
 		JLabel tsLabel = new JLabel("Timestamp: " + model.timestamp());
+		tsLabel.setFont(new Font("Segoe UI",Font.BOLD,12));
 		content.add(tsLabel);
 		// content.add(Box.createVerticalStrut(5));
 		content.add(buttonPanel);
@@ -73,6 +77,7 @@ public class TransactionPanel extends JPanel implements Updatable{
 		for(int i = 0; i < model.size(); i++ ) {
 			
 			JLabel stepLabel = new JLabel(model.getStep(i).toString());
+			stepLabel.setFont(new Font("Segoe UI",Font.PLAIN,12));
 			if( i == model.position() ) {
 				stepLabel.setBorder(
 					new javax.swing.border.CompoundBorder(
