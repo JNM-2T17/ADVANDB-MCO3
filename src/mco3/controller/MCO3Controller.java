@@ -7,14 +7,26 @@ import mco3.model.*;
 import mco3.view.*;
 
 public class MCO3Controller {
+	public static final int ADD = 1;
+	public static final int RUN = 2;
+
+	private String schema;
+
 	private ArrayList<Transaction> tranList;
 	private CheckpointManager cm;
 
 	private MainFrame mf;
 	private ConcurrencyPanel cPanel;
+	private MCO3Menu menu;
+	private ConnectScreen cFrame;
 
-	public MCO3Controller() throws Exception {
+	public MCO3Controller(String schema) throws Exception {
+		this.schema = schema;
+		DBManager.schema = schema;
 		mf = new MainFrame();
+
+		menu = new MCO3Menu(this);
+		mf.setJMenuBar(menu);
 
 		cm = CheckpointManager.instance(30000);
 		cm.start();
@@ -34,13 +46,13 @@ public class MCO3Controller {
 			tranList.add(new ReadDensity2(i,isos[j]));
 			tranList.add(new EditAlp(i + 1,isos[j]));
 		}
-		tranList.add(new EditAlp(9,IsoLevel.READ_UNCOMMITTED,AbstractTransaction.FAIL_AFTER));
+		tranList.add(new EditAlp(9,IsoLevel.READ_UNCOMMITTED,AbstractTransaction.ABORT_AFTER));
 
 		cPanel = new ConcurrencyPanel(tranList,this);
 		mf.setMain(cPanel);
-		for(Transaction t : tranList) {
-			(new Thread(t)).start();
-		}
+		// for(Transaction t : tranList) {
+		// 	(new Thread(t)).start();
+		// }
 
 		// boolean finished;
 
@@ -84,6 +96,29 @@ public class MCO3Controller {
 		// 		finished = finished && t.isFinished();
 		// 	}
 		// } while(!finished);
+	}
+
+	public String schema() {
+		return schema;
+	}
+
+	public void setMain(int value) {
+		switch(value) {
+			case ADD:
+				break;
+			case RUN:
+				break;
+			default:
+		}
+	}
+
+	public void connectScreen() {
+		cFrame = new ConnectScreen(this);
+	}
+
+	public void connect(String ip) {
+		System.out.println("Connect to " + ip);
+		cFrame.dispose();
 	}
 
 	public void step(final Transaction model) {

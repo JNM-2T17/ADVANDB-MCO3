@@ -38,7 +38,7 @@ public class MainFrame extends JFrame {
 	}
 	
 	public void center() {
-		setSize( 700, 500 );
+		setSize( 700, 550 );
 		setLocationRelativeTo( null );
 	}
 	
