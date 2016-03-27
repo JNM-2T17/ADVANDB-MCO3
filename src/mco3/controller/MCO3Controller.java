@@ -14,22 +14,32 @@ public class MCO3Controller {
 
 	private ArrayList<Transaction> tranList;
 	private CheckpointManager cm;
+	private ConnectionManager conM;
 
 	private MainFrame mf;
 	private ConcurrencyPanel cPanel;
 	private MCO3Menu menu;
 	private ConnectScreen cFrame;
+	private ConStatusPanel csPanel;
+	private boolean connectOpen;
 
 	public MCO3Controller(String schema) throws Exception {
 		this.schema = schema;
 		DBManager.schema = schema;
+		connectOpen = false;
+
 		mf = new MainFrame();
+
+		csPanel = new ConStatusPanel(schema);
+		mf.setSouth(csPanel);
 
 		menu = new MCO3Menu(this);
 		mf.setJMenuBar(menu);
 
-		cm = CheckpointManager.instance(30000);
-		cm.start();
+		// cm = CheckpointManager.instance(30000);
+		// cm.start();
+
+		conM = ConnectionManager.instance(schema,csPanel);
 
 		tranList = new ArrayList<Transaction>();
 
@@ -113,12 +123,18 @@ public class MCO3Controller {
 	}
 
 	public void connectScreen() {
+		if( connectOpen ) {
+			cFrame.dispose();
+		}
 		cFrame = new ConnectScreen(this);
+		connectOpen = true;
 	}
 
 	public void connect(String ip) {
 		System.out.println("Connect to " + ip);
+		conM.connect(ip);
 		cFrame.dispose();
+		connectOpen = false;
 	}
 
 	public void step(final Transaction model) {
