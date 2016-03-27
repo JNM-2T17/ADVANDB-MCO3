@@ -2,6 +2,7 @@ package mco3.model;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -102,11 +103,40 @@ public class ConnectionManager {
 			default:
 		}
 		csPanel.setModel(status[0],status[1],status[2]);
-		//start Listener thread
+		(new Listener(tag,registree)).start();
 	}
 
-	public void sendMessage(String tag, String message) {
-		
+	public void unregister(String tag) {
+		sockets.remove(tag);
+		switch(tag) {
+			case "db_hpq":
+				status[0] = false;
+				break;
+			case "db_hpq_marinduque":
+				status[1] = false;
+				break;
+			case "db_hpq_palawan":
+				status[2] = false;
+				break;	
+			default:
+		}
+		csPanel.setModel(status[0],status[1],status[2]);
+		r.wakeUp();
+	}
+
+	public void sendMessage(String tag, String message, String replyHeader) {
+		Socket s = sockets.get(tag);
+		try {
+			DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+			dos.writeBytes(message);
+			//register replyHeader
+		} catch( Exception e ) {
+			e.printStackTrace();
+		}
+	}
+
+	public void processMessage(String tag, String header, String message) {
+
 	}
 
 	private class Receiver extends Thread {
@@ -154,6 +184,59 @@ public class ConnectionManager {
 
 		public synchronized void wakeUp() {
 			notifyAll();
+		}
+	}
+
+	private class Listener extends Thread {
+		private String tag;
+		private DataInputStream dis;
+
+		public Listener(String tag,Socket s) {
+			this.tag = tag;
+			try {
+				dis = new DataInputStream(s.getInputStream());
+			} catch( Exception e ) {
+				e.printStackTrace();
+			}
+		}
+
+		public void run() {
+			while(true) {
+				try {
+					String header = "";
+					char c;
+					do {
+						try {
+							c = (char)dis.readUnsignedByte();
+							if( c != 30 ) {
+								header += c;
+							}
+						} catch(Exception e ) {
+							unregister(tag);
+							return;
+						}
+					} while(c != 30);
+					System.out.println(header);
+					//header is type<space>id<space>length
+					String[] parts = header.split(" ");
+					int length = Integer.parseInt(parts[2]);
+					byte[] data = new byte[length];
+
+					int curr = 0;
+					do {
+						int read = dis.read(data,curr,length - curr);
+						if( read != -1 ) {
+							curr += read;
+						} else {
+							break;
+						}
+					} while( curr < length );
+					String message = new String(data);
+					processMessage(tag,parts[0] + " " + parts[1],message);
+				} catch( Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 }
