@@ -1,10 +1,12 @@
 package mco3.model;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import mco3.view.Updatable;
+import mco3.controller.MCO3Controller;
 
 /**
  * This class provides a generic implementation for the transaction interface
@@ -151,6 +153,64 @@ public abstract class AbstractTransaction implements Transaction {
 	public DBAction getStep(int index) {
 		return (index >= 0 && index < transaction.size()) 
 					? transaction.get(index) : null;
+	}
+
+	public void releaseLocks() {
+		ConnectionManager cm = ConnectionManager.instance();
+		switch(MCO3Controller.schema) {
+			case "db_hpq":
+				try {
+					PreparedStatement s = getConnection().prepareStatement("UNLOCK TABLES");
+					s.execute();
+					s.close();
+				} catch(Exception e) {}
+
+				// System.out.println(cm.isConnected("db_hpq_marinduque"));
+				// System.out.println(cm.isConnected("db_hpq_palawan"));
+				cm.sendMessage("db_hpq_marinduque","UNLOCK " + transactionId()
+										 + MCO3Controller.schema
+										 + " 0" + (char)30 + (char)4);
+				cm.sendMessage("db_hpq_palawan","UNLOCK " + transactionId()
+										 + MCO3Controller.schema
+										 + " 0" + (char)30 + (char)4);
+				break;
+			case "db_hpq_marinduque":
+				// System.out.println(cm.isConnected("db_hpq"));
+				// System.out.println(cm.isConnected("db_hpq_palawan"));
+				cm.sendMessage("db_hpq","UNLOCK " + transactionId()
+										 + MCO3Controller.schema
+										 + " 0" + (char)30 + (char)4);
+				
+				try {
+					PreparedStatement s = getConnection().prepareStatement("UNLOCK TABLES");
+					s.execute();
+					s.close();
+				} catch(Exception e) {}
+
+				cm.sendMessage("db_hpq_palawan","UNLOCK " + transactionId()
+										 + MCO3Controller.schema
+										 + " 0" + (char)30 + (char)4);
+				break;
+			case "db_hpq_palawan":
+				// System.out.println(cm.isConnected("db_hpq"));
+				// System.out.println(cm.isConnected("db_hpq_marinduque"));
+				
+				cm.sendMessage("db_hpq","UNLOCK " + transactionId()
+										 + MCO3Controller.schema
+										 + " 0" + (char)30 + (char)4);
+
+				cm.sendMessage("db_hpq_marinduque","UNLOCK " + transactionId()
+										 + MCO3Controller.schema
+										 + " 0" + (char)30 + (char)4);
+				
+				try {
+					PreparedStatement s = getConnection().prepareStatement("UNLOCK TABLES");
+					s.execute();
+					s.close();
+				} catch(Exception e) {}
+				break;
+			default:
+		}
 	}
 
 	/**

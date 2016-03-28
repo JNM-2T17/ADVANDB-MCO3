@@ -611,3 +611,26 @@ CHECKPOINT
 2hpq_alpnullnull
 2 commit
 1 commit
+2 start
+2hpq_alpnullnull
+2 commit
+1 start
+1 commit
+2 start
+2 abort
+2 start
+2 abort
+3 start
+2 start
+3 abort
+2 commit
+3 start
+4 start
+4hpq_alpnullnull
+4 commit
+5 start
+6 start
+3 abort
+5 abort
+6hpq_alpnullnull
+6 commit

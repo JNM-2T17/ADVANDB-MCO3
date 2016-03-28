@@ -35,6 +35,7 @@ public class EditAlp extends AbstractTransaction {
 	 * This method must release all locks held by this method
 	 */
 	public void releaseLocks() {
+		super.releaseLocks();
 		LockManager.instance().unlock(this,"hpq_hh");
 		LockManager.instance().unlock(this,"hpq_crop");
 		LockManager.instance().unlock(this,"hpq_alp");
