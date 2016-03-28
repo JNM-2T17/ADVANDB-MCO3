@@ -593,3 +593,21 @@ CHECKPOINT
 2 commit
 4hpq_alpnullnull
 4 commit
+2 start
+2hpq_alpnullnull
+2 commit
+3 start
+3 commit
+2 start
+1 start
+1 commit
+2hpq_alpnullnull
+2 commit
+4 start
+1 start
+2 start
+4hpq_alpnullnull
+4 commit
+2hpq_alpnullnull
+2 commit
+1 commit
