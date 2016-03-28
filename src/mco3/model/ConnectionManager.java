@@ -237,9 +237,13 @@ public class ConnectionManager {
 				}
 				break;
 			case "OKLOCK":
-			case "READY!":
 				System.out.println(header + " " + id);
 				actions.get(header + " " + id).wakeUp(true);
+				actions.remove(header + " " + id);
+				break;
+			case "READY!":
+				System.out.println(header + " " + id);
+				actions.get(header + " " + id).wakeUp(message.equals("YES"));
 				actions.remove(header + " " + id);
 				break;
 			case "UNLOCK":
@@ -250,7 +254,9 @@ public class ConnectionManager {
 				break;
 			case "READY":
 				if( control.check(id) ) {
-					sendMessage(tag,"READY! " + id + " 0" + (char)30 + (char)4);
+					sendMessage(tag,"READY! " + id + " 3" + (char)30 + "YES" + (char)4);
+				} else {
+					sendMessage(tag,"READY! " + id + " 2" + (char)30 + "NO" + (char)4);
 				}
 				break;
 			case "COMMIT":

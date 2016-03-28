@@ -51,7 +51,7 @@ public class Lock implements DBAction {
 				case "db_hpq":
 					PreparedStatement ps 
 						= t.getConnection().prepareStatement(lock);
-					System.out.println(ps);
+					// System.out.println(ps);
 					ps.execute();
 					ps.close();
 					if( isRead) {
@@ -118,7 +118,7 @@ public class Lock implements DBAction {
 					}
 					
 					ps = t.getConnection().prepareStatement(lock);
-					System.out.println(ps);
+					// System.out.println(ps);
 					ps.execute();
 					ps.close();
 					if( isRead ) {
@@ -185,7 +185,7 @@ public class Lock implements DBAction {
 					}
 
 					ps = t.getConnection().prepareStatement(lock);
-					System.out.println(ps);
+					// System.out.println(ps);
 					ps.execute();
 					ps.close();
 					break;

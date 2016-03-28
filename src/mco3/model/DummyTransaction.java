@@ -12,7 +12,7 @@ public class DummyTransaction extends AbstractTransaction {
 
 	}
 
-	public void write(String[] query) {
+	public synchronized void write(String[] query) {
 		try {
 			PreparedStatement ps = con.prepareStatement(query[0]);
 			for(int i = 1; i < query.length; i++) {
@@ -26,7 +26,7 @@ public class DummyTransaction extends AbstractTransaction {
 		}
 	}
 
-	public void lock(String stmt) {
+	public synchronized void lock(String stmt) {
 		try {
 			PreparedStatement ps = con.prepareStatement(stmt);
 			System.out.println(ps);
