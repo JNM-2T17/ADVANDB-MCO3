@@ -21,10 +21,12 @@ public class ConnectionManager {
 	private Receiver r;
 	private ConStatusPanel csPanel;
 	private boolean[] status;
+	public boolean temp;
 
 	private MCO3Controller control;
 
 	private ConnectionManager(MCO3Controller control,ConStatusPanel csPanel) {
+		temp = false;
 		this.control = control;
 		this.csPanel = csPanel;
 		sockets = new HashMap<String,Socket>();
@@ -149,6 +151,7 @@ public class ConnectionManager {
 			try {
 				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 				dos.writeBytes(message);
+				dos.flush();
 				return true;
 			} catch( Exception e ) {
 				e.printStackTrace();	
@@ -164,6 +167,7 @@ public class ConnectionManager {
 			try {
 				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 				dos.writeBytes(message);
+				dos.flush();
 				System.out.println("Waiting for " + replyHeader);
 				actions.put(replyHeader,dba);
 				return true;
@@ -178,20 +182,37 @@ public class ConnectionManager {
 		return sockets.get(tag) != null;
 	}
 
-	public void processMessage(String tag, String header, String id, String message) {
-		System.out.println(tag + " " + header + " " + id + " " + message);
+	public synchronized void processMessage(final String tag, String header
+												, final String id
+												, final String message) {
+		System.out.println("RECEIVED: " + tag + " " + header + " " + id + " " + message);
 		switch(header) {
 			case "BEGIN":
+				if( !temp ) {
+					temp = true;
+					(new Thread() {
+						public void run() {
+							control.runAll();
+						}
+					}).start();
+				}
 				control.addDummy(id + tag,id,message);
 				break;
 			case "LOCK":
-				if(control.lock(id,message)) {
-					System.out.println("SENDING OKLOCK " + id);
-					sendMessage(tag,"OKLOCK " + id + " 0" + (char)30 + (char)40);
+				(new Thread() {
+					public void run() {
+						control.lock(id,message,tag);
+					}
+				}).start();
+				try {
+					Thread.sleep(100);
+				} catch(Exception e) {
+					e.printStackTrace();
 				}
 				break;
 			case "OKLOCK":
 			case "READY!":
+				System.out.println(header + " " + id);
 				actions.get(header + " " + id).wakeUp(true);
 				actions.remove(header + " " + id);
 				break;
@@ -202,7 +223,7 @@ public class ConnectionManager {
 				control.write(id,message.split("" + (char)31));
 				break;
 			case "READY":
-				sendMessage(tag,"READY! " + id + " 0" + (char)30 + (char)40);
+				sendMessage(tag,"READY! " + id + " 0" + (char)30 + (char)4);
 				break;
 			case "COMMIT":
 				control.commit(id);

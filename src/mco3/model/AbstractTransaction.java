@@ -234,7 +234,9 @@ public abstract class AbstractTransaction implements Transaction {
 			if( position == size() ) {
 				status = FINISHED;
 			}
-			view.update();
+			if( view != null ) {
+				view.update();
+			}
 		}
 	}
 
@@ -264,7 +266,9 @@ public abstract class AbstractTransaction implements Transaction {
 				break;
 			default:
 				this.status = status;	
-				view.update();
+				if( view != null ) {
+					view.update();
+				}
 		}
 	}
 
@@ -298,7 +302,9 @@ public abstract class AbstractTransaction implements Transaction {
 			CheckpointManager.instance().unlock();
 			status = RUNNING;
 			position = 1;
-			view.update();
+			if( view != null ) {
+				view.update();
+			}
 		} catch(SQLException se) {
 			se.printStackTrace();
 		}
@@ -360,7 +366,9 @@ public abstract class AbstractTransaction implements Transaction {
 			// CheckpointManager.instance().unlock();
 			position = size();
 			status = ROLLBACK;
-			view.update();
+			if( view != null ) {
+				view.update();
+			}
 		} catch(SQLException se) {
 			se.printStackTrace();
 		}

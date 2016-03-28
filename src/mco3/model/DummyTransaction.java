@@ -29,6 +29,7 @@ public class DummyTransaction extends AbstractTransaction {
 	public void lock(String stmt) {
 		try {
 			PreparedStatement ps = con.prepareStatement(stmt);
+			System.out.println(ps);
 			ps.execute();
 			ps.close();
 		} catch(Exception e) {
@@ -39,10 +40,9 @@ public class DummyTransaction extends AbstractTransaction {
 	public void releaseLocks() {
 		try {
 			PreparedStatement ps = con.prepareStatement("UNLOCK TABLES");
+			System.out.println(ps);
 			ps.execute();
 			ps.close();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}	
+		} catch(Exception e) {}	
 	}
 }

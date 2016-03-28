@@ -13,8 +13,8 @@ public class MCO3Controller {
 	public static String schema;
 
 	private ArrayList<Transaction> tranList;
-	private CheckpointManager cm;
-	private ConnectionManager conM;
+	// private CheckpointManager cm;
+	private ConnectionManager cm;
 
 	private MainFrame mf;
 	private ConcurrencyPanel cPanel;
@@ -42,7 +42,7 @@ public class MCO3Controller {
 		// cm = CheckpointManager.instance(30000);
 		// cm.start();
 
-		conM = ConnectionManager.instance(this,csPanel);
+		cm = ConnectionManager.instance(this,csPanel);
 
 		tranList = new ArrayList<Transaction>();
 
@@ -63,52 +63,6 @@ public class MCO3Controller {
 
 		cPanel = new ConcurrencyPanel(tranList,this);
 		mf.setMain(cPanel);
-		// for(Transaction t : tranList) {
-		// 	(new Thread(t)).start();
-		// }
-
-		// boolean finished;
-
-		// do {
-		// 	String[][] transactions = new String[tranList.size()][];
-		// 	int max = 0;
-		// 	for(int i = 0; i < tranList.size(); i++) {
-		// 		transactions[i] = tranList.get(i).toString().split("\n");
-		// 		if( transactions[i].length > max ) {
-		// 			max = transactions[i].length;
-		// 		}
-		// 	}
-		// 	for(int i = 0; i < max; i++ ) {
-		// 		for(int j = 0; j < transactions.length; j++ ) {
-		// 			if( j > 0 ) {
-		// 				System.out.print("\t");
-		// 			}
-		// 			if( i < transactions[j].length) {
-		// 				System.out.print(transactions[j][i]);
-		// 			} else {
-		// 				System.out.print("\t");
-		// 			}
-		// 		}
-		// 		System.out.println();
-		// 	}
-
-		// 	Scanner sc = new Scanner(System.in);
-		// 	System.out.print("Which transaction? ");
-		// 	final int tNo = sc.nextInt() - 1;
-
-		// 	(new Thread(){
-		// 		public void run() {
-		// 			tranList.get(tNo).step();
-		// 		}
-		// 	}).start();
-
-		// 	Thread.sleep(100);
-
-		// 	finished = true;
-		// 	for(Transaction t : tranList ) {
-		// 		finished = finished && t.isFinished();
-		// 	}
-		// } while(!finished);
 	}
 
 	public String schema() {
@@ -119,8 +73,10 @@ public class MCO3Controller {
 		dm.add(tag,id,isolation);
 	}
 
-	public boolean lock(String tag, String stmt) {
-		return dm.lock(tag,stmt);
+	public void lock(String tag, String stmt,String socket) {
+		if( dm.lock(tag,stmt) ) {
+			cm.sendMessage(socket,"OKLOCK " + tag + " 0" + (char)30 + (char)4);
+		}
 	}
 
 	public void unlock(String tag) {
@@ -149,6 +105,29 @@ public class MCO3Controller {
 		}
 	}
 
+	public void runAll() {
+		Thread[] threads = new Thread[tranList.size()];
+		int i = 0;
+		for(Transaction t : tranList) {
+			threads[i] = (new Thread(t));
+			i++;
+		}
+		for(Thread t : threads) {
+			t.start();
+		}
+		for(Thread t : threads) {
+			try {
+				t.join();
+				if( tranList.size() > 0 ) {
+					tranList.remove(0);
+					cPanel.update();
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public void connectScreen() {
 		if( connectOpen ) {
 			cFrame.dispose();
@@ -159,12 +138,21 @@ public class MCO3Controller {
 
 	public void connect(String ip) {
 		System.out.println("Connect to " + ip);
-		conM.connect(ip);
+		cm.connect(ip);
 		cFrame.dispose();
 		connectOpen = false;
 	}
 
 	public void step(final Transaction model) {
+		if( !cm.temp ) {
+			cm.temp = true;
+			(new Thread() {
+				public void run() {
+					runAll();
+				}
+			}).start();
+			return;
+		}
 		if( model.isFinished()) {
 			tranList.remove(model);
 			cPanel.update();

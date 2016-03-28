@@ -25,27 +25,27 @@ public class BeginAction implements DBAction {
 		String message = t.isoLevel().level() + "";
 		switch(MCO3Controller.schema) {
 			case "db_hpq":
-				if( cm.isConnected("db_hpq_palawan") ) {
-					cm.sendMessage("db_hpq_palawan","BEGIN " + t.transactionId()
-										 + " " + message.length() + (char)30 
-										 + message + (char)4);
-				}
-
 				if( cm.isConnected("db_hpq_marinduque") ) {
 					cm.sendMessage("db_hpq_marinduque","BEGIN " + t.transactionId()
 										 + " " + message.length() + (char)30 
 										 + message + (char)4);
 				}
-				break;
-			case "db_hpq_marinduque":
+				
 				if( cm.isConnected("db_hpq_palawan") ) {
 					cm.sendMessage("db_hpq_palawan","BEGIN " + t.transactionId()
 										 + " " + message.length() + (char)30 
 										 + message + (char)4);
 				}
-
+				break;
+			case "db_hpq_marinduque":
 				if( cm.isConnected("db_hpq") ) {
 					cm.sendMessage("db_hpq","BEGIN " + t.transactionId()
+										 + " " + message.length() + (char)30 
+										 + message + (char)4);
+				}
+				
+				if( cm.isConnected("db_hpq_palawan") ) {
+					cm.sendMessage("db_hpq_palawan","BEGIN " + t.transactionId()
 										 + " " + message.length() + (char)30 
 										 + message + (char)4);
 				}
