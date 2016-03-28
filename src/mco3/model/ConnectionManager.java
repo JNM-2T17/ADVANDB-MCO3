@@ -17,6 +17,7 @@ public class ConnectionManager {
 	private String schema;
 	private HashMap<String,Socket> sockets;
 	private HashMap<String,DBAction> actions;
+	private HashMap<String,String> pendingLocks;
 	private ArrayList<String> actKeys;
 	private Receiver r;
 	private ConStatusPanel csPanel;
@@ -31,6 +32,7 @@ public class ConnectionManager {
 		this.csPanel = csPanel;
 		sockets = new HashMap<String,Socket>();
 		actions = new HashMap<String,DBAction>();
+		pendingLocks = new HashMap<String,String>();
 		actKeys = new ArrayList<String>();
 		this.schema = control.schema;
 		status = new boolean[3];
@@ -146,7 +148,7 @@ public class ConnectionManager {
 
 	public synchronized boolean sendMessage(String tag, String message) {
 		Socket s = sockets.get(tag);
-		System.out.println("SENDING " + tag + " " + message);
+		// System.out.println("SENDING " + tag + " " + message);
 		if( s != null ) {
 			try {
 				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
@@ -162,7 +164,7 @@ public class ConnectionManager {
 
 	public synchronized boolean sendMessage(String tag, String message, String replyHeader,DBAction dba) {
 		Socket s = sockets.get(tag);
-		System.out.println("SENDING " + tag + " " + message);
+		// System.out.println("SENDING " + tag + " " + message);
 		if( s != null ) {
 			try {
 				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
@@ -185,9 +187,11 @@ public class ConnectionManager {
 	public synchronized void processMessage(final String tag, String header
 												, final String id
 												, final String message) {
-		System.out.println("RECEIVED: " + tag + " " + header + " " + id + " " + message);
+		// System.out.println("RECEIVED: " + tag + " " + header + " " + id + " " + message);
 		switch(header) {
 			case "BEGIN":
+				// System.out.println("RECEIVED: " + tag + " " + header + " " + id + " " + message);
+		
 				if( !temp ) {
 					temp = true;
 					(new Thread() {
@@ -197,17 +201,39 @@ public class ConnectionManager {
 					}).start();
 				}
 				control.addDummy(id + tag,id,message);
+				String pending = pendingLocks.get(id + tag);
+				if( pending != null) {
+					final String[] parts = pending.split("" + (char)30);
+					pendingLocks.remove(id + tag);
+					System.out.println("RELOCKING " + id + tag);
+					(new Thread() {
+						public void run() {
+							control.lock(id + tag,parts[0],parts[1]);
+						}
+					}).start();
+					try {
+						Thread.sleep(200);
+					} catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
 				break;
 			case "LOCK":
-				(new Thread() {
-					public void run() {
-						control.lock(id,message,tag);
+				// System.out.println("RECEIVED: " + tag + " " + header + " " + id + " " + message);
+		
+				if( control.check(id) ) {
+					(new Thread() {
+						public void run() {
+							control.lock(id,message,tag);
+						}
+					}).start();
+					try {
+						Thread.sleep(200);
+					} catch(Exception e) {
+						e.printStackTrace();
 					}
-				}).start();
-				try {
-					Thread.sleep(100);
-				} catch(Exception e) {
-					e.printStackTrace();
+				} else {
+					pendingLocks.put(id,message + (char)30 + tag);
 				}
 				break;
 			case "OKLOCK":
@@ -223,7 +249,9 @@ public class ConnectionManager {
 				control.write(id,message.split("" + (char)31));
 				break;
 			case "READY":
-				sendMessage(tag,"READY! " + id + " 0" + (char)30 + (char)4);
+				if( control.check(id) ) {
+					sendMessage(tag,"READY! " + id + " 0" + (char)30 + (char)4);
+				}
 				break;
 			case "COMMIT":
 				control.commit(id);

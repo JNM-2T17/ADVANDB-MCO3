@@ -358,10 +358,11 @@ public abstract class AbstractTransaction implements Transaction {
 					default:
 				}
 			}
+			System.out.println("ROLLING BACK " + transactionId());
 			con.rollback();
+			releaseLocks();
 			con.close();
 			TransactionManager.instance().unregister(this);
-			releaseLocks();
 			
 			// CheckpointManager.instance().unlock();
 			position = size();
@@ -398,6 +399,7 @@ public abstract class AbstractTransaction implements Transaction {
 		try {
 			System.out.println("Committing " + transactionId() );
 			con.commit();
+			releaseLocks();
 			con.close();
 			TransactionManager.instance().unregister(this);
 			status = COMMIT;

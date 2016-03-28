@@ -46,6 +46,10 @@ public class DummyManager {
 		}
 	}
 
+	public boolean check(String tag) {
+		return dummyMap.get(tag) != null;
+	}
+
 	public void unlock(String tag) {
 		DummyTransaction dt = dummyMap.get(tag);
 		if( dt != null  ) {
@@ -64,6 +68,7 @@ public class DummyManager {
 		DummyTransaction dt = dummyMap.get(tag);
 		if( dt != null  ) {
 			dt.commit();
+			dummyMap.remove(tag);
 		}	
 	}
 
@@ -71,6 +76,7 @@ public class DummyManager {
 		DummyTransaction dt = dummyMap.get(tag);
 		if( dt != null  ) {
 			dt.rollback();
+			dummyMap.remove(tag);
 		}	
 	}
 }

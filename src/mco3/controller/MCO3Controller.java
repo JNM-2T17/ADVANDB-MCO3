@@ -95,6 +95,10 @@ public class MCO3Controller {
 		dm.abort(tag);
 	}
 
+	public boolean check(String tag) {
+		return dm.check(tag);
+	}
+
 	public void setMain(int value) {
 		switch(value) {
 			case ADD:
