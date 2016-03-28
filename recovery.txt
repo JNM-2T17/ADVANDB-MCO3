@@ -634,3 +634,11 @@ CHECKPOINT
 5 abort
 6hpq_alpnullnull
 6 commit
+2 start
+1 start
+2hpq_alpnullnull
+2 commit
+2 start
+1 start
+2hpq_alpnullnull
+2 commit

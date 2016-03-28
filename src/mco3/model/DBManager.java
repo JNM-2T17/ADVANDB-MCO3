@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import mco3.Driver;
 
 public class DBManager {
+	public static String schema;
 	private String driverName;
 	private String url;
 	private String dbName;
@@ -50,7 +51,7 @@ public class DBManager {
 			}
 			instance = new DBManager("com.mysql.jdbc.DriverManager"
 					,"jdbc:mysql://127.0.0.1:3306/"
-					,Driver.SCHEMA,"root","");
+					,schema,"root","");
 			return instance;
 		}
 	}
