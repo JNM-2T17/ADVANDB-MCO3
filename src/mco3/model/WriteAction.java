@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import mco3.controller.MCO3Controller;
+
 /**
  * DBAction for writing from the database
  * @author Austin Fernandez
@@ -40,15 +42,89 @@ public class WriteAction implements DBAction {
 	 */
 	public void execute() {
 		//SQL shit here
-		LogManager.instance().flush();
-		LogManager.instance().writeChange(t,item,oldVal,newVal);
+		// LogManager.instance().flush();
+		// LogManager.instance().writeChange(t,item,oldVal,newVal);
 		try {
-			PreparedStatement ps = con.prepareStatement(query);
+			String message = query;
 			for(int i = 0; i < params.length; i++) {
-				ps.setString(i + 1, params[i]);
+				message += (char)31 + params[i];
 			}
-			System.out.println(ps);
-			ps.execute();
+			ConnectionManager cm = ConnectionManager.instance();
+			switch(MCO3Controller.schema) {
+				case "db_hpq":
+					PreparedStatement ps = con.prepareStatement(query);
+					for(int i = 0; i < params.length; i++) {
+						ps.setString(i + 1, params[i]);
+					}
+					System.out.println(ps);
+					ps.execute();
+
+					if( !cm.sendMessage("db_hpq_marinduque","WRITE " 
+										+ t.transactionId() 
+										+ MCO3Controller.schema + " " 
+										+ message.length() + (char)30 + message
+										+ (char)4)) {
+						t.rollback();
+					}
+
+					if( !cm.sendMessage("db_hpq_palawan","WRITE " 
+										+ t.transactionId() 
+										+ MCO3Controller.schema + " " 
+										+ message.length() + (char)30 + message
+										+ (char)4)) {
+						t.rollback();
+					}
+					break;
+				case "db_hpq_marinduque":
+					if( !cm.sendMessage("db_hpq","WRITE " 
+										+ t.transactionId() 
+										+ MCO3Controller.schema + " " 
+										+ message.length() + (char)30 + message
+										+ (char)4)) {
+						t.rollback();
+					}
+
+					ps = con.prepareStatement(query);
+					for(int i = 0; i < params.length; i++) {
+						ps.setString(i + 1, params[i]);
+					}
+					System.out.println(ps);
+					ps.execute();
+
+					if( !cm.sendMessage("db_hpq_palawan","WRITE " 
+										+ t.transactionId() 
+										+ MCO3Controller.schema + " " 
+										+ message.length() + (char)30 + message
+										+ (char)4)) {
+						t.rollback();
+					}
+					break;
+				case "db_hpq_palawan":
+					if( !cm.sendMessage("db_hpq","WRITE " 
+										+ t.transactionId() 
+										+ MCO3Controller.schema + " " 
+										+ message.length() + (char)30 + message
+										+ (char)4)) {
+						t.rollback();
+					}
+
+					if( !cm.sendMessage("db_hpq_marinduque","WRITE " 
+										+ t.transactionId() 
+										+ MCO3Controller.schema + " " 
+										+ message.length() + (char)30 + message
+										+ (char)4)) {
+						t.rollback();
+					}
+
+					ps = con.prepareStatement(query);
+					for(int i = 0; i < params.length; i++) {
+						ps.setString(i + 1, params[i]);
+					}
+					System.out.println(ps);
+					ps.execute();
+					break;
+				default:
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 			t.rollback();

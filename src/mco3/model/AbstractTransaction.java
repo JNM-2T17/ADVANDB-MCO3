@@ -156,60 +156,68 @@ public abstract class AbstractTransaction implements Transaction {
 	}
 
 	public void releaseLocks() {
-		ConnectionManager cm = ConnectionManager.instance();
-		switch(MCO3Controller.schema) {
-			case "db_hpq":
-				try {
-					PreparedStatement s = getConnection().prepareStatement("UNLOCK TABLES");
-					s.execute();
-					s.close();
-				} catch(Exception e) {}
+		if( this instanceof DummyTransaction ) {
+			try {
+				PreparedStatement s = getConnection().prepareStatement("UNLOCK TABLES");
+				s.execute();
+				s.close();
+			} catch(Exception e) {}
+		} else {
+			ConnectionManager cm = ConnectionManager.instance();
+			switch(MCO3Controller.schema) {
+				case "db_hpq":
+					try {
+						PreparedStatement s = getConnection().prepareStatement("UNLOCK TABLES");
+						s.execute();
+						s.close();
+					} catch(Exception e) {}
 
-				// System.out.println(cm.isConnected("db_hpq_marinduque"));
-				// System.out.println(cm.isConnected("db_hpq_palawan"));
-				cm.sendMessage("db_hpq_marinduque","UNLOCK " + transactionId()
-										 + MCO3Controller.schema
-										 + " 0" + (char)30 + (char)4);
-				cm.sendMessage("db_hpq_palawan","UNLOCK " + transactionId()
-										 + MCO3Controller.schema
-										 + " 0" + (char)30 + (char)4);
-				break;
-			case "db_hpq_marinduque":
-				// System.out.println(cm.isConnected("db_hpq"));
-				// System.out.println(cm.isConnected("db_hpq_palawan"));
-				cm.sendMessage("db_hpq","UNLOCK " + transactionId()
-										 + MCO3Controller.schema
-										 + " 0" + (char)30 + (char)4);
-				
-				try {
-					PreparedStatement s = getConnection().prepareStatement("UNLOCK TABLES");
-					s.execute();
-					s.close();
-				} catch(Exception e) {}
+					// System.out.println(cm.isConnected("db_hpq_marinduque"));
+					// System.out.println(cm.isConnected("db_hpq_palawan"));
+					cm.sendMessage("db_hpq_marinduque","UNLOCK " + transactionId()
+											 + MCO3Controller.schema
+											 + " 0" + (char)30 + (char)4);
+					cm.sendMessage("db_hpq_palawan","UNLOCK " + transactionId()
+											 + MCO3Controller.schema
+											 + " 0" + (char)30 + (char)4);
+					break;
+				case "db_hpq_marinduque":
+					// System.out.println(cm.isConnected("db_hpq"));
+					// System.out.println(cm.isConnected("db_hpq_palawan"));
+					cm.sendMessage("db_hpq","UNLOCK " + transactionId()
+											 + MCO3Controller.schema
+											 + " 0" + (char)30 + (char)4);
+					
+					try {
+						PreparedStatement s = getConnection().prepareStatement("UNLOCK TABLES");
+						s.execute();
+						s.close();
+					} catch(Exception e) {}
 
-				cm.sendMessage("db_hpq_palawan","UNLOCK " + transactionId()
-										 + MCO3Controller.schema
-										 + " 0" + (char)30 + (char)4);
-				break;
-			case "db_hpq_palawan":
-				// System.out.println(cm.isConnected("db_hpq"));
-				// System.out.println(cm.isConnected("db_hpq_marinduque"));
-				
-				cm.sendMessage("db_hpq","UNLOCK " + transactionId()
-										 + MCO3Controller.schema
-										 + " 0" + (char)30 + (char)4);
+					cm.sendMessage("db_hpq_palawan","UNLOCK " + transactionId()
+											 + MCO3Controller.schema
+											 + " 0" + (char)30 + (char)4);
+					break;
+				case "db_hpq_palawan":
+					// System.out.println(cm.isConnected("db_hpq"));
+					// System.out.println(cm.isConnected("db_hpq_marinduque"));
+					
+					cm.sendMessage("db_hpq","UNLOCK " + transactionId()
+											 + MCO3Controller.schema
+											 + " 0" + (char)30 + (char)4);
 
-				cm.sendMessage("db_hpq_marinduque","UNLOCK " + transactionId()
-										 + MCO3Controller.schema
-										 + " 0" + (char)30 + (char)4);
-				
-				try {
-					PreparedStatement s = getConnection().prepareStatement("UNLOCK TABLES");
-					s.execute();
-					s.close();
-				} catch(Exception e) {}
-				break;
-			default:
+					cm.sendMessage("db_hpq_marinduque","UNLOCK " + transactionId()
+											 + MCO3Controller.schema
+											 + " 0" + (char)30 + (char)4);
+					
+					try {
+						PreparedStatement s = getConnection().prepareStatement("UNLOCK TABLES");
+						s.execute();
+						s.close();
+					} catch(Exception e) {}
+					break;
+				default:
+			}
 		}
 	}
 
@@ -309,14 +317,47 @@ public abstract class AbstractTransaction implements Transaction {
 	public void rollback() {
 		try {
 			System.out.println("Aborting " + transactionId());
-			CheckpointManager.instance().lock();
-			LogManager.instance().writeAbort(this);
+			// CheckpointManager.instance().lock();
+			// LogManager.instance().writeAbort(this);
+			if( !(this instanceof DummyTransaction ) ) {
+				ConnectionManager cm = ConnectionManager.instance();
+				switch(MCO3Controller.schema) {
+					case "db_hpq":
+						cm.sendMessage("db_hpq_marinduque","ABORT " + transactionId()
+												 + MCO3Controller.schema
+												 + " 0" + (char)30 + (char)4);
+						cm.sendMessage("db_hpq_palawan","ABORT " + transactionId()
+												 + MCO3Controller.schema
+												 + " 0" + (char)30 + (char)4);
+						break;
+					case "db_hpq_marinduque":
+						cm.sendMessage("db_hpq","ABORT " + transactionId()
+												 + MCO3Controller.schema
+												 + " 0" + (char)30 + (char)4);
+						
+						cm.sendMessage("db_hpq_palawan","ABORT " + transactionId()
+												 + MCO3Controller.schema
+												 + " 0" + (char)30 + (char)4);
+						break;
+					case "db_hpq_palawan":
+						cm.sendMessage("db_hpq","ABORT " + transactionId()
+												 + MCO3Controller.schema
+												 + " 0" + (char)30 + (char)4);
+
+						cm.sendMessage("db_hpq_marinduque","ABORT " + transactionId()
+												 + MCO3Controller.schema
+												 + " 0" + (char)30 + (char)4);
+						
+						break;
+					default:
+				}
+			}
 			con.rollback();
 			con.close();
-			undoChanges();
 			TransactionManager.instance().unregister(this);
 			releaseLocks();
-			CheckpointManager.instance().unlock();
+			
+			// CheckpointManager.instance().unlock();
 			position = size();
 			status = ROLLBACK;
 			view.update();
@@ -346,21 +387,15 @@ public abstract class AbstractTransaction implements Transaction {
 	 * in the recovery log, which implementers must do.
 	 */
 	public void commit() {
-		if( abort == ABORT_AFTER ) {
+		try {
+			System.out.println("Committing " + transactionId() );
+			con.commit();
+			con.close();
+			TransactionManager.instance().unregister(this);
+			status = COMMIT;
+		} catch(SQLException se) {
+			se.printStackTrace();
 			rollback();
-		} else if( abort == FAIL_AFTER ) {
-			System.exit(0);
-		} else {
-			try {
-				System.out.println("Committing " + transactionId() );
-				con.commit();
-				con.close();
-				TransactionManager.instance().unregister(this);
-				status = COMMIT;
-			} catch(SQLException se) {
-				se.printStackTrace();
-				rollback();
-			}
 		}
 	}
 

@@ -49,7 +49,7 @@ public class TransactionManager {
 	 * @param t transaction to register
 	 */
 	public synchronized void register(Transaction t) {
-		LogManager.instance().writeStart(t);
+		// LogManager.instance().writeStart(t);
 		t.setTimestamp(timestamp);
 		timestamp++;
 		active.add(t.transactionId() + "");

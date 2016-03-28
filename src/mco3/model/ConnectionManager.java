@@ -135,10 +135,8 @@ public class ConnectionManager {
 			default:
 		}
 		for( String s : actKeys ) {
-			if( s.endsWith(tag) )  {
-				actions.get(s).wakeUp(false);
-				actions.remove(s);
-			}
+			actions.get(s).wakeUp(false);
+			actions.remove(s);
 		}
 		csPanel.setModel(status[0],status[1],status[2]);
 		r.wakeUp();
@@ -187,16 +185,31 @@ public class ConnectionManager {
 				control.addDummy(id + tag,id,message);
 				break;
 			case "LOCK":
-				control.lock(id,message);
-				System.out.println("SENDING OKLOCK " + id);
-				sendMessage(tag,"OKLOCK " + id + " 0" + (char)30 + (char)40);
+				if(control.lock(id,message)) {
+					System.out.println("SENDING OKLOCK " + id);
+					sendMessage(tag,"OKLOCK " + id + " 0" + (char)30 + (char)40);
+				}
 				break;
 			case "OKLOCK":
+			case "READY!":
 				actions.get(header + " " + id).wakeUp(true);
 				actions.remove(header + " " + id);
 				break;
 			case "UNLOCK":
 				control.unlock(id);
+				break;
+			case "WRITE":
+				control.write(id,message.split("" + (char)31));
+				break;
+			case "READY":
+				sendMessage(tag,"READY! " + id + " 0" + (char)30 + (char)40);
+				break;
+			case "COMMIT":
+				control.commit(id);
+				break;
+			case "ABORT":
+				control.abort(id);
+				break;
 			default:
 		}
 	}

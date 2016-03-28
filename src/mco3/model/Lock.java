@@ -46,7 +46,6 @@ public class Lock implements DBAction {
 		}
 
 		ConnectionManager cm = ConnectionManager.instance();
-		int lockCtr = 0;
 		try {
 			switch(MCO3Controller.schema) {
 				case "db_hpq":
@@ -68,6 +67,9 @@ public class Lock implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
+							if( isRead ) {
+								return;
+							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
@@ -84,6 +86,9 @@ public class Lock implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
+							if( isRead ) {
+								return;
+							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
@@ -150,6 +155,9 @@ public class Lock implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
+							if( isRead ) {
+								return;
+							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
@@ -166,6 +174,9 @@ public class Lock implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
+							if( isRead ) {
+								return;
+							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}

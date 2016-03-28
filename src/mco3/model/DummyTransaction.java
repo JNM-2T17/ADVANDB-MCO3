@@ -12,9 +12,13 @@ public class DummyTransaction extends AbstractTransaction {
 
 	}
 
-	public void write(String query) {
+	public void write(String[] query) {
 		try {
-			PreparedStatement ps = con.prepareStatement(query);
+			PreparedStatement ps = con.prepareStatement(query[0]);
+			for(int i = 1; i < query.length; i++) {
+				ps.setString(i,query[i]);
+			}
+			System.out.println(ps);
 			ps.execute();
 			ps.close();
 		} catch(Exception e) {

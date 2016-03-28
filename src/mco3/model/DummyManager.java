@@ -36,10 +36,13 @@ public class DummyManager {
 		}
 	}
 
-	public void lock(String tag,String stmt) {
+	public boolean lock(String tag,String stmt) {
 		DummyTransaction dt = dummyMap.get(tag);
 		if( dt != null  ) {
 			dt.lock(stmt);
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -47,6 +50,27 @@ public class DummyManager {
 		DummyTransaction dt = dummyMap.get(tag);
 		if( dt != null  ) {
 			dt.releaseLocks();
+		}	
+	}
+
+	public void write(String tag,String[] query) {
+		DummyTransaction dt = dummyMap.get(tag);
+		if( dt != null  ) {
+			dt.write(query);
+		}	
+	}
+
+	public void commit(String tag) {
+		DummyTransaction dt = dummyMap.get(tag);
+		if( dt != null  ) {
+			dt.commit();
+		}	
+	}
+
+	public void abort(String tag) {
+		DummyTransaction dt = dummyMap.get(tag);
+		if( dt != null  ) {
+			dt.rollback();
 		}	
 	}
 }

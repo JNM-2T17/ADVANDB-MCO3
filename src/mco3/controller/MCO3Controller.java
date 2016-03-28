@@ -119,12 +119,24 @@ public class MCO3Controller {
 		dm.add(tag,id,isolation);
 	}
 
-	public void lock(String tag, String stmt) {
-		dm.lock(tag,stmt);
+	public boolean lock(String tag, String stmt) {
+		return dm.lock(tag,stmt);
 	}
 
 	public void unlock(String tag) {
 		dm.unlock(tag);
+	}
+
+	public void write(String tag,String[] query) {
+		dm.write(tag,query);
+	}
+
+	public void commit(String tag) {
+		dm.commit(tag);
+	}
+
+	public void abort(String tag) {
+		dm.abort(tag);
 	}
 
 	public void setMain(int value) {
