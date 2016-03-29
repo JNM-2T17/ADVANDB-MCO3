@@ -36,6 +36,17 @@ public class DummyManager {
 		}
 	}
 
+	public void unregister(String tag) {
+		String[] temp = new String[0];
+		dummyMap.keySet().toArray(temp);
+
+		for( String s : temp ) {
+			if( s.endsWith(tag) ) {
+				dummyMap.get(s).rollback();
+			}
+		}
+	}
+
 	public boolean lock(String tag,String stmt) {
 		DummyTransaction dt = dummyMap.get(tag);
 		if( dt != null  ) {
@@ -60,6 +71,9 @@ public class DummyManager {
 	public void write(String tag,String[] query) {
 		DummyTransaction dt = dummyMap.get(tag);
 		if( dt != null  ) {
+			if( tag.startsWith("9")) {
+				System.out.println(tag + " IS WRITING " + query[0]);
+			}
 			dt.write(query);
 		}	
 	}
@@ -75,6 +89,9 @@ public class DummyManager {
 	public void abort(String tag) {
 		DummyTransaction dt = dummyMap.get(tag);
 		if( dt != null  ) {
+			if( tag.startsWith("9")) {
+				System.out.println(tag + " IS ABORTING");
+			}
 			dt.rollback();
 			dummyMap.remove(tag);
 		}	

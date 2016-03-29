@@ -143,6 +143,7 @@ public class ConnectionManager {
 			actions.remove(s);
 		}
 		csPanel.setModel(status[0],status[1],status[2]);
+		control.unregister(tag);
 		r.wakeUp();
 	}
 

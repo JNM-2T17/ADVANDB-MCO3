@@ -46,23 +46,10 @@ public class MCO3Controller {
 
 		tranList = new ArrayList<Transaction>();
 
-		IsoLevel[] isos = new IsoLevel[] {
-			IsoLevel.READ_UNCOMMITTED,
-			IsoLevel.READ_COMMITTED,
-			IsoLevel.READ_REPEATABLE,
-			IsoLevel.SERIALIZABLE
-		};
-
-		int i = 1;
-
-		for( int j = 0; j < isos.length; j++, i += 2 ) {
-			tranList.add(new ReadDensity2(i,isos[j]));
-			tranList.add(new EditAlp(i + 1,isos[j],11328,10));
-		}
-		tranList.add(new EditAlp(9,IsoLevel.READ_UNCOMMITTED,11328,10,AbstractTransaction.ABORT_AFTER));
-
 		cPanel = new ConcurrencyPanel(tranList,this);
 		mf.setMain(cPanel);
+
+		setMain(ADD);
 	}
 
 	public String schema() {
@@ -87,6 +74,10 @@ public class MCO3Controller {
 		dm.write(tag,query);
 	}
 
+	public void unregister(String tag) {
+		dm.unregister(tag);
+	}
+
 	public void commit(String tag) {
 		dm.commit(tag);
 	}
@@ -102,6 +93,26 @@ public class MCO3Controller {
 	public void setMain(int value) {
 		switch(value) {
 			case ADD:
+				IsoLevel[] isos = new IsoLevel[] {
+					IsoLevel.READ_UNCOMMITTED,
+					IsoLevel.READ_COMMITTED,
+					IsoLevel.READ_REPEATABLE,
+					IsoLevel.SERIALIZABLE
+				};
+
+				int i = 1;
+
+				try {
+					for( int j = 0; j < isos.length; j++, i += 2 ) {
+						tranList.add(new ReadDensity2(i,isos[j]));
+						tranList.add(new EditAlp(i + 1,isos[j],11328,10));
+					}
+					tranList.add(new EditAlp(9,IsoLevel.READ_UNCOMMITTED,11328,10,AbstractTransaction.ABORT_AFTER));
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+				cPanel.update();
+				cm.temp = false;
 				break;
 			case RUN:
 				break;

@@ -12,6 +12,7 @@ public class Lock implements DBAction {
 	private Transaction t;
 	private String[] items;
 	private String[] modes;
+	private boolean status;
 
 	/**
 	 * basic constructor
@@ -22,6 +23,7 @@ public class Lock implements DBAction {
 		this.t = t;
 		this.items = items;
 		this.modes = modes;
+		status = true;
 	}
 
 	/**
@@ -67,8 +69,10 @@ public class Lock implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
-							if( isRead ) {
+							if( status && isRead ) {
 								return;
+							} else if ( !status && !isRead ) {
+								t.rollback();
 							}
 						} catch(Exception e) {
 							e.printStackTrace();
@@ -86,8 +90,10 @@ public class Lock implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
-							if( isRead ) {
+							if( status && isRead ) {
 								return;
+							} else if ( !status && !isRead ) {
+								t.rollback();
 							}
 						} catch(Exception e) {
 							e.printStackTrace();
@@ -121,8 +127,10 @@ public class Lock implements DBAction {
 					// System.out.println(ps);
 					ps.execute();
 					ps.close();
-					if( isRead ) {
+					if( status && isRead ) {
 						return;
+					} else if ( !status && !isRead ) {
+						t.rollback();
 					}
 
 					if( cm.isConnected("db_hpq_palawan") ) {
@@ -134,8 +142,10 @@ public class Lock implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
-							if( isRead ) {
+							if( status && isRead ) {
 								return;
+							} else if ( !status && !isRead ) {
+								t.rollback();
 							}
 						} catch(Exception e) {
 							e.printStackTrace();
@@ -155,8 +165,10 @@ public class Lock implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
-							if( isRead ) {
+							if( status && isRead ) {
 								return;
+							} else if ( !status && !isRead ) {
+								t.rollback();
 							}
 						} catch(Exception e) {
 							e.printStackTrace();
@@ -174,8 +186,10 @@ public class Lock implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
-							if( isRead ) {
+							if( status && isRead ) {
 								return;
+							} else if ( !status && !isRead ) {
+								t.rollback();
 							}
 						} catch(Exception e) {
 							e.printStackTrace();
@@ -216,6 +230,7 @@ public class Lock implements DBAction {
 	}
 
 	public synchronized void wakeUp(boolean status) {
+		this.status = status;
 		if( status ) {
 			notifyAll();
 		} else {
