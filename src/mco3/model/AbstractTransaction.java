@@ -360,23 +360,23 @@ public abstract class AbstractTransaction implements Transaction {
 				}
 			}
 			System.out.println("ROLLING BACK " + transactionId());
-			PreparedStatement ps = con.prepareStatement("SELECT alp_area FROM hpq_alp WHERE hpq_hh_id = 11328");
-			System.out.println(ps);
-			ResultSet rs = ps.executeQuery();
-			if(rs.next() ) {
-				System.out.println("BEFORE ROLLBACK WITH ALP_AREA = " + rs.getInt("alp_area"));
-			} else {
-				System.out.println("NO DATA");
-			}
+			// PreparedStatement ps = con.prepareStatement("SELECT alp_area FROM hpq_alp WHERE hpq_hh_id = 11328");
+			// System.out.println(ps);
+			// ResultSet rs = ps.executeQuery();
+			// if(rs.next() ) {
+			// 	System.out.println("BEFORE ROLLBACK WITH ALP_AREA = " + rs.getInt("alp_area"));
+			// } else {
+			// 	System.out.println("NO DATA");
+			// }
 			con.rollback();
-			ps = con.prepareStatement("SELECT alp_area FROM hpq_alp WHERE hpq_hh_id = 11328");
-			System.out.println(ps);
-			rs = ps.executeQuery();
-			if(rs.next() ) {
-				System.out.println("ROLLBACK WITH ALP_AREA = " + rs.getInt("alp_area"));
-			} else {
-				System.out.println("NO DATA");
-			}
+			// ps = con.prepareStatement("SELECT alp_area FROM hpq_alp WHERE hpq_hh_id = 11328");
+			// System.out.println(ps);
+			// rs = ps.executeQuery();
+			// if(rs.next() ) {
+			// 	System.out.println("ROLLBACK WITH ALP_AREA = " + rs.getInt("alp_area"));
+			// } else {
+			// 	System.out.println("NO DATA");
+			// }
 			releaseLocks();
 			con.close();
 			TransactionManager.instance().unregister(this);
@@ -416,23 +416,23 @@ public abstract class AbstractTransaction implements Transaction {
 	public void commit() {
 		try {
 			System.out.println("Committing " + transactionId() );
-			PreparedStatement ps = con.prepareStatement("SELECT alp_area FROM hpq_alp WHERE hpq_hh_id = 11328");
-			System.out.println(ps);
-			ResultSet rs = ps.executeQuery();
-			if(rs.next() ) {
-				System.out.println("BEFORE COMMITTING WITH ALP_AREA = " + rs.getInt("alp_area"));
-			} else {
-				System.out.println("NO DATA");
-			}
+			// PreparedStatement ps = con.prepareStatement("SELECT alp_area FROM hpq_alp WHERE hpq_hh_id = 11328");
+			// System.out.println(ps);
+			// ResultSet rs = ps.executeQuery();
+			// if(rs.next() ) {
+			// 	System.out.println("BEFORE COMMITTING WITH ALP_AREA = " + rs.getInt("alp_area"));
+			// } else {
+			// 	System.out.println("NO DATA");
+			// }
 			con.commit();
-			ps = con.prepareStatement("SELECT alp_area FROM hpq_alp WHERE hpq_hh_id = 11328");
-			System.out.println(ps);
-			rs = ps.executeQuery();
-			if(rs.next() ) {
-				System.out.println("COMMITTING WITH ALP_AREA = " + rs.getInt("alp_area"));
-			} else {
-				System.out.println("NO DATA");
-			}
+			// ps = con.prepareStatement("SELECT alp_area FROM hpq_alp WHERE hpq_hh_id = 11328");
+			// System.out.println(ps);
+			// rs = ps.executeQuery();
+			// if(rs.next() ) {
+			// 	System.out.println("COMMITTING WITH ALP_AREA = " + rs.getInt("alp_area"));
+			// } else {
+			// 	System.out.println("NO DATA");
+			// }
 			releaseLocks();
 			con.close();
 			TransactionManager.instance().unregister(this);

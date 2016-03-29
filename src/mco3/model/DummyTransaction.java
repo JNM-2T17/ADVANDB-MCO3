@@ -22,14 +22,14 @@ public class DummyTransaction extends AbstractTransaction {
 			// System.out.println(ps);
 			ps.execute();
 			ps.close();
-			ps = con.prepareStatement("SELECT alp_area FROM hpq_alp WHERE hpq_hh_id = 11328");
-			System.out.println(ps);
-			ResultSet rs = ps.executeQuery();
-			if(rs.next() ) {
-				System.out.println("AFTER WRITING ALP_AREA = " + rs.getInt("alp_area"));
-			} else {
-				System.out.println("NO DATA");
-			}
+			// ps = con.prepareStatement("SELECT alp_area FROM hpq_alp WHERE hpq_hh_id = 11328");
+			// System.out.println(ps);
+			// ResultSet rs = ps.executeQuery();
+			// if(rs.next() ) {
+			// 	System.out.println("AFTER WRITING ALP_AREA = " + rs.getInt("alp_area"));
+			// } else {
+			// 	System.out.println("NO DATA");
+			// }
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
