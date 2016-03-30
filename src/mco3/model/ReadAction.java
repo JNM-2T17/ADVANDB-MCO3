@@ -13,6 +13,7 @@ public class ReadAction implements DBAction {
 	private ResultSet result;
 	private String query;
 	private String[] params;
+	private String[] columns;
 	private String[] items;
 	private Connection con;
 	private boolean status;
@@ -28,6 +29,7 @@ public class ReadAction implements DBAction {
 						,String[] items) {
 		this.con = con;
 		this.query = query;
+		this.columns = columns;
 		this.params = params;
 		this.items = items;
 	}

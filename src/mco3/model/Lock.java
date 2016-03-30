@@ -73,12 +73,14 @@ public class Lock implements DBAction {
 								return;
 							} else if ( !status && !isRead ) {
 								t.rollback();
+								return;
 							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
 					} else if( !isRead ) {
 						t.rollback();
+						return;
 					}
 					
 					if( cm.isConnected("db_hpq_palawan") ) {
@@ -94,12 +96,14 @@ public class Lock implements DBAction {
 								return;
 							} else if ( !status && !isRead ) {
 								t.rollback();
+								return;
 							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
 					} else if( !isRead ) {
 						t.rollback();
+						return;
 					}
 
 					break;
@@ -121,6 +125,7 @@ public class Lock implements DBAction {
 						}
 					} else if( !isRead ) {
 						t.rollback();
+						return;
 					}
 					
 					ps = t.getConnection().prepareStatement(lock);
@@ -131,6 +136,7 @@ public class Lock implements DBAction {
 						return;
 					} else if ( !status && !isRead ) {
 						t.rollback();
+						return;
 					}
 
 					if( cm.isConnected("db_hpq_palawan") ) {
@@ -146,12 +152,14 @@ public class Lock implements DBAction {
 								return;
 							} else if ( !status && !isRead ) {
 								t.rollback();
+								return;
 							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
 					} else if( !isRead ) {
 						t.rollback();
+						return;
 					}
 
 					break;
@@ -169,12 +177,14 @@ public class Lock implements DBAction {
 								return;
 							} else if ( !status && !isRead ) {
 								t.rollback();
+								return;
 							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
 					} else if( !isRead ) {
 						t.rollback();
+						return;
 					}
 
 					if( cm.isConnected("db_hpq_marinduque") ) {
@@ -190,12 +200,14 @@ public class Lock implements DBAction {
 								return;
 							} else if ( !status && !isRead ) {
 								t.rollback();
+								return;
 							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
 					} else if( !isRead ) {
 						t.rollback();
+						return;
 					}
 
 					ps = t.getConnection().prepareStatement(lock);
@@ -235,6 +247,7 @@ public class Lock implements DBAction {
 			notifyAll();
 		} else {
 			t.rollback();
+			return;
 		}
 	}
 }
