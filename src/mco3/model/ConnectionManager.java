@@ -1,7 +1,10 @@
 package mco3.model;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileReader;
 import java.io.EOFException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -64,6 +67,34 @@ public class ConnectionManager {
 
 	public static synchronized ConnectionManager instance() {
 		return instance;
+	}
+
+	public void autoConnect() {
+		String tag = "";
+		switch(schema) {
+			case "db_hpq":
+				tag = "db_hpq_marinduque";
+				break;
+			case "db_hpq_marinduque":
+				tag = "db_hpq_palawan";
+				break;
+			case "db_hpq_palawan":
+				tag = "db_hpq";
+				break;	
+			default:
+		}	
+		try {
+			BufferedReader br = new BufferedReader(
+									new FileReader(
+										new File("address.txt")));
+			String ip = br.readLine();
+			br.close();
+			while(!isConnected(tag)) {
+				connect(ip);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void connect(String ipAddress) {
@@ -266,6 +297,11 @@ public class ConnectionManager {
 			case "ABORT":
 				control.abort(id);
 				break;
+			case "RECON":
+				if( !isConnected(id) ) {
+					connect(message);
+				}
+				break;
 			default:
 		}
 	}
@@ -296,11 +332,27 @@ public class ConnectionManager {
 							message += c;
 						}
 					} while(c != 4);
-					System.out.println(message + " from " + s.getInetAddress().getHostAddress());
+					String ip = s.getInetAddress().getHostAddress();
+					System.out.println(message + " from " + ip);
 					if( message.equals("CONNECT")) {
 						DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 						dos.writeBytes("OK" + (char)4);
 						register(tag,s);
+						String sendTag = "";
+						switch(schema) {
+							case "db_hpq":
+								sendTag = "db_hpq_marinduque";
+								break;
+							case "db_hpq_marinduque":
+								sendTag = "db_hpq_palawan";
+								break;
+							case "db_hpq_palawan":
+								sendTag = "db_hpq";
+								break;	
+							default:
+						}
+						sendMessage(sendTag,"RECON " + tag + " " + ip.length() 
+										+ (char)30 + ip + (char)4);
 						wait();
 					}
 				} catch(Exception e) {

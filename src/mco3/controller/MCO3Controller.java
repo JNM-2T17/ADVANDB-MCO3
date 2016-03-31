@@ -50,6 +50,11 @@ public class MCO3Controller {
 		mf.setMain(cPanel);
 
 		setMain(ADD);
+		(new Thread() {
+			public void run() {
+				cm.autoConnect();
+			}
+		}).start();
 	}
 
 	public String schema() {
