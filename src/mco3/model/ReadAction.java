@@ -2,6 +2,7 @@ package mco3.model;
 
 import java.sql.ResultSet;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 import mco3.controller.MCO3Controller;
 
@@ -11,6 +12,7 @@ import mco3.controller.MCO3Controller;
  */
 public class ReadAction implements DBAction {
 	private ResultSet result;
+	private Transaction t;
 	private String query;
 	private String[] params;
 	private String[] columns;
@@ -21,13 +23,14 @@ public class ReadAction implements DBAction {
 	/**
 	 * basic constructor
 	 * @param con DBConnection
-	 * @param query query to execute
+	 * @param query query to executeQuery
 	 * @param params parameters for the query
 	 * @param items db items to read
 	 */
-	public ReadAction(Connection con,String query, String[] columns, String[] params
+	public ReadAction(Transaction t,String query, String[] columns, String[] params
 						,String[] items) {
-		this.con = con;
+		this.t = t;
+		this.con = t.getConnection();
 		this.query = query;
 		this.columns = columns;
 		this.params = params;
@@ -53,17 +56,24 @@ public class ReadAction implements DBAction {
 			message += params[i];
 		}
 
+		ConnectionManager cm = ConnectionManager.instance();
+
 		switch(MCO3Controller.schema) {
-			ResultSet rs1,rs2;
-			PreparedStatement ps;
 			case "db_hpq":
-				ps = con.prepareStatement(query);
-				for(int i = 0; i < params.length; i++) {
+				ResultSet rs1,rs2;
+				PreparedStatement ps;
+				try {
+					ps = con.prepareStatement(query);
+					for(int i = 0; i < params.length; i++) {
 						ps.setString(i + 1, params[i]);
 					}
 					System.out.println(ps);
-					ps.execute();
-					//Display Results
+					ps.executeQuery();
+				} catch(Exception e) {
+					e.printStackTrace();
+					t.rollback();
+				}
+				//Display Results
 				break;
 			case "db_hpq_marinduque":
 				//try sending to central READ <this.id> message.length() + (char)30 + message + (char)4
@@ -72,32 +82,37 @@ public class ReadAction implements DBAction {
 										+ t.transactionId() 
 										+ MCO3Controller.schema + " " 
 										+ message.length() + (char)30 + message
-										+ (char)4,"DATA " + t.transactionId()+MCO3Controller.schema)){//if success, create results object and display results
+										+ (char)4,"DATA " + t.transactionId()+MCO3Controller.schema,this)){//if success, create results object and display results
 					//create results object and display results
 					try{
+				      t.setStatus(Transaction.WAITING);
 				      wait();
+				      t.setStatus(Transaction.RUNNING);
 				      if(status){
 				      	ps = con.prepareStatement(query);
 					    for(int i = 0; i < params.length; i++) {
 						    ps.setString(i + 1, params[i]);
 					    }
 					    System.out.println(ps);
-					    rs1 = ps.execute();
+					    rs1 = ps.executeQuery();
 				      }
 				    }catch(Exception e){
 					    e.printStackTrace();
+					    t.rollback();
 				    }
 				    //Display Results
 				}
 				//SEND READ TO OTHER NODE
 				else{//else if not connected or failed 
-				   if(cb.sendMessage("db_hpq_palawan","READ " 
+				   if(cm.sendMessage("db_hpq_palawan","READ " 
 										+ t.transactionId() 
 										+ MCO3Controller.schema + " " 
 										+ message.length() + (char)30 + message
-										+ (char)4,"DATA " + t.transactionId()+MCO3Controller.schema)){
+										+ (char)4,"DATA " + t.transactionId()+MCO3Controller.schema,this)){
 				   		try{
+						    t.setStatus(Transaction.WAITING);
 						    wait();
+						    t.setStatus(Transaction.RUNNING);
 						    if(status) {
 						    	//process
 							    ps = con.prepareStatement(query);
@@ -105,18 +120,20 @@ public class ReadAction implements DBAction {
 									ps.setString(i + 1, params[i]);
 								}
 								System.out.println(ps);
-								rs1 =ps.execute();
+								rs1 =ps.executeQuery();
+
+								//Read from self
+								ps = con.prepareStatement(query);
+								for(int i = 0; i < params.length; i++) {
+									ps.setString(i + 1, params[i]);
+								}
+								System.out.println(ps);
+								rs2 = ps.executeQuery();
 							}
 						}catch(Exception e){
 							e.printStackTrace();
+							t.rollback();
 						}	
-						//Read from self
-						ps = con.prepareStatement(query);
-						for(int i = 0; i < params.length; i++) {
-							ps.setString(i + 1, params[i]);
-						}
-						System.out.println(ps);
-						rs2 = ps.execute();
 				    }
 				      //if success store temporary results object
 				    //get union of results
@@ -131,21 +148,24 @@ public class ReadAction implements DBAction {
 										+ t.transactionId() 
 										+ MCO3Controller.schema + " " 
 										+ message.length() + (char)30 + message
-										+ (char)4,"DATA " + t.transactionId()+MCO3Controller.schema)){//if success, create results object and display results
+										+ (char)4,"DATA " + t.transactionId()+MCO3Controller.schema,this)){//if success, create results object and display results
 					//create results object and display results
-				try{
-				    wait();
-				    if(status){
-				    	ps = con.prepareStatement(query);
-					    for(int i = 0; i < params.length; i++) {
-						    ps.setString(i + 1, params[i]);
-					    }
-					    System.out.println(ps);
+					try{
+					    t.setStatus(Transaction.WAITING);
+					    wait();
+					    t.setStatus(Transaction.RUNNING);
+					    if(status){
+					    	ps = con.prepareStatement(query);
+						    for(int i = 0; i < params.length; i++) {
+							    ps.setString(i + 1, params[i]);
+						    }
+						    System.out.println(ps);
 
-					    rs1 = ps.execute();
-				      }
+						    rs1 = ps.executeQuery();
+					    }
 					}catch(Exception e){
 						e.printStackTrace();
+						t.rollback();
 					}	
 				}
 				//SEND READ TO OTHER NODE
@@ -154,29 +174,31 @@ public class ReadAction implements DBAction {
 										+ t.transactionId() 
 										+ MCO3Controller.schema + " " 
 										+ message.length() + (char)30 + message
-										+ (char)4,"DATA " +t.transactionId()+MCO3Controller.schema)){
+										+ (char)4,"DATA " +t.transactionId()+MCO3Controller.schema,this)){
 						try{
+						    t.setStatus(Transaction.WAITING);
 						    wait();
+						    t.setStatus(Transaction.RUNNING);
 						    if(status){
-						    	ps = con.prepareStatement(q);
+						    	ps = con.prepareStatement(query);
 							    for(int i = 0; i < params.length; i++) {
 								    ps.setString(i + 1, params[i]);
 							    }
 							    System.out.println(ps);
-							    rs1 =ps.execute();
+							    rs1 =ps.executeQuery();
+
+							    //Read from self
+								ps = con.prepareStatement(query);
+								for(int i = 0; i < params.length; i++) {
+									ps.setString(i + 1, params[i]);
+								}
+								System.out.println(ps);
+								rs2 = ps.executeQuery();
 						    }
 						}catch(Exception e){
 							e.printStackTrace();
+							t.rollback();
 						}	
-
-						//Read from self
-						ps = con.prepareStatement(query);
-						for(int i = 0; i < params.length; i++) {
-							ps.setString(i + 1, params[i]);
-						}
-						System.out.println(ps);
-						rs2 = ps.execute();
-
 					}
 				      //if success store temporary results object
 				    //get union of results

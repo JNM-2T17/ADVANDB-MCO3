@@ -68,7 +68,9 @@ public class Lock implements DBAction {
 											 + t.transactionId() 
 											 + MCO3Controller.schema,this);
 						try {
+							t.setStatus(Transaction.WAITING);
 							wait();
+							t.setStatus(Transaction.RUNNING);
 							if( status && isRead ) {
 								return;
 							} else if ( !status && !isRead ) {
@@ -91,7 +93,9 @@ public class Lock implements DBAction {
 											 + t.transactionId() 
 											 + MCO3Controller.schema,this);
 						try {
+							t.setStatus(Transaction.WAITING);
 							wait();
+							t.setStatus(Transaction.RUNNING);
 							if( status && isRead ) {
 								return;
 							} else if ( !status && !isRead ) {
@@ -116,7 +120,9 @@ public class Lock implements DBAction {
 											 + t.transactionId() 
 											 + MCO3Controller.schema,this);
 						try {
+							t.setStatus(Transaction.WAITING);
 							wait();
+							t.setStatus(Transaction.RUNNING);
 							if( isRead) {
 								return;
 							}
@@ -147,7 +153,9 @@ public class Lock implements DBAction {
 											 + t.transactionId() 
 											 + MCO3Controller.schema,this);
 						try {
+							t.setStatus(Transaction.WAITING);
 							wait();
+							t.setStatus(Transaction.RUNNING);
 							if( status && isRead ) {
 								return;
 							} else if ( !status && !isRead ) {
@@ -172,7 +180,9 @@ public class Lock implements DBAction {
 											 + t.transactionId() 
 											 + MCO3Controller.schema,this);
 						try {
+							t.setStatus(Transaction.WAITING);
 							wait();
+							t.setStatus(Transaction.RUNNING);
 							if( status && isRead ) {
 								return;
 							} else if ( !status && !isRead ) {
@@ -195,7 +205,9 @@ public class Lock implements DBAction {
 											 + t.transactionId() 
 											 + MCO3Controller.schema,this);
 						try {
+							t.setStatus(Transaction.WAITING);
 							wait();
+							t.setStatus(Transaction.RUNNING);
 							if( status && isRead ) {
 								return;
 							} else if ( !status && !isRead ) {

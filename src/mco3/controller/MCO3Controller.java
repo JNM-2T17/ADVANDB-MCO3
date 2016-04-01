@@ -1,7 +1,6 @@
 package mco3.controller;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import mco3.model.*;
 import mco3.view.*;
@@ -109,7 +108,7 @@ public class MCO3Controller {
 
 				try {
 					for( int j = 0; j < isos.length; j++, i += 2 ) {
-						tranList.add(new ReadDensity2(i,isos[j]));
+						// tranList.add(new ReadDensity2(i,isos[j]));
 						tranList.add(new EditAlp(i + 1,isos[j],11328,10));
 					}
 					// tranList.add(new EditAlp(9,IsoLevel.READ_UNCOMMITTED,11328,10,AbstractTransaction.ABORT_AFTER));

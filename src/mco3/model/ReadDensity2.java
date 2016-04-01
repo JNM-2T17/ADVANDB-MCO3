@@ -24,11 +24,11 @@ public class ReadDensity2 extends AbstractTransaction {
 			"READ",
 			"READ"
 		}));
-		transaction.add(new ReadAction(null,"",null,null,new String[] {
+		transaction.add(new ReadAction(this,"",null,null,new String[] {
 			"hpq_hh",
 			"hpq_alp"
 		}));
-		transaction.add(new ReadAction(null,"",null,null,new String[] {
+		transaction.add(new ReadAction(this,"",null,null,new String[] {
 			"hpq_hh",
 			"hpq_alp"
 		}));

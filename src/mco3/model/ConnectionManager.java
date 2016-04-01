@@ -89,6 +89,7 @@ public class ConnectionManager {
 										new File("address.txt")));
 			String ip = br.readLine();
 			br.close();
+			System.out.println("Trying Connection with " + ip);
 			while(!isConnected(tag)) {
 				connect(ip);
 			}
@@ -132,8 +133,9 @@ public class ConnectionManager {
 			if( message.equals("OK") ) {
 				register(tag,s);
 			}
+			r.wakeSend();
 		} catch( Exception e) {
-			e.printStackTrace();
+			System.out.println("Connection Failed");
 		}
 	}
 
@@ -160,12 +162,24 @@ public class ConnectionManager {
 		switch(tag) {
 			case "db_hpq":
 				status[0] = false;
+				if( "db_hpq_marinduque".equals(schema)) {
+					r.wakeUp();
+					System.out.println("RECEIVER OPEN");
+				}
 				break;
 			case "db_hpq_marinduque":
 				status[1] = false;
+				if( "db_hpq_palawan".equals(schema)) {
+					r.wakeUp();
+					System.out.println("RECEIVER OPEN");
+				}
 				break;
 			case "db_hpq_palawan":
 				status[2] = false;
+				if( "db_hpq".equals(schema)) {
+					r.wakeUp();
+					System.out.println("RECEIVER OPEN");
+				}
 				break;	
 			default:
 		}
@@ -175,7 +189,6 @@ public class ConnectionManager {
 		}
 		csPanel.setModel(status[0],status[1],status[2]);
 		control.unregister(tag);
-		r.wakeUp();
 	}
 
 	public synchronized boolean sendMessage(String tag, String message) {
@@ -219,7 +232,7 @@ public class ConnectionManager {
 	public synchronized void processMessage(final String tag, String header
 												, final String id
 												, final String message) {
-		// System.out.println("RECEIVED: " + tag + " " + header + " " + id + " " + message);
+		System.out.println("RECEIVED: " + tag + " " + header + " " + id + " " + message);
 		switch(header) {
 			case "BEGIN":
 				// System.out.println("RECEIVED: " + tag + " " + header + " " + id + " " + message);
@@ -309,6 +322,7 @@ public class ConnectionManager {
 	private class Receiver extends Thread {
 		private ServerSocket ss;
 		private String tag;
+		private boolean waitSending;
 
 		public Receiver(String tag,int port) {
 			this.tag = tag;
@@ -321,6 +335,7 @@ public class ConnectionManager {
 
 		public synchronized void receive() {
 			while(true) {
+				waitSending = false;
 				try {
 					Socket s = ss.accept();
 					String message = "";
@@ -351,8 +366,12 @@ public class ConnectionManager {
 								break;	
 							default:
 						}
-						sendMessage(sendTag,"RECON " + tag + " " + ip.length() 
-										+ (char)30 + ip + (char)4);
+						System.out.println("SENDING RECON TO " + sendTag);
+						while(!sendMessage(sendTag,"RECON " + tag + " " + ip.length() 
+										+ (char)30 + ip + (char)4)) {
+							waitSending = true;
+							wait();
+						}
 						wait();
 					}
 				} catch(Exception e) {
@@ -367,6 +386,12 @@ public class ConnectionManager {
 
 		public synchronized void wakeUp() {
 			notifyAll();
+		}
+
+		public synchronized void wakeSend() {
+			if( waitSending ) {
+				notifyAll();
+			}
 		}
 	}
 
