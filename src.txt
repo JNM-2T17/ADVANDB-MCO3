@@ -9,6 +9,7 @@
 "D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\ConnectionManager.java"
 "D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\DBAction.java"
 "D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\DBManager.java"
+"D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\DeleteAlp.java"
 "D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\DummyManager.java"
 "D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\DummyTransaction.java"
 "D:\\DLSU\\Term 8\\ADVANDB\\Requirements\\MCO3\\ADVANDB-MCO3\\src\\mco3\\model\\EditAlp.java"

@@ -22,11 +22,8 @@ public class WriteAction implements DBAction {
 	/**
 	 * basic constructor
 	 * @param t transaction that owns this action
-	 * @param con DBConnection
 	 * @param query query to execute
 	 * @param params parameters for the query
-	 * @param oldVal old data values
-	 * @param newVal new data values
 	 * @param item db item to write
 	 */
 	public WriteAction(Transaction t,String query, String[] params,String item) {

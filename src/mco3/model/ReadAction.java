@@ -22,8 +22,9 @@ public class ReadAction implements DBAction {
 
 	/**
 	 * basic constructor
-	 * @param con DBConnection
+	 * @param t transaction
 	 * @param query query to executeQuery
+	 * @param columns columns in query
 	 * @param params parameters for the query
 	 * @param items db items to read
 	 */

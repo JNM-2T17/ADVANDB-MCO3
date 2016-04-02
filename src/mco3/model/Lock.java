@@ -17,7 +17,8 @@ public class Lock implements DBAction {
 	/**
 	 * basic constructor
 	 * @param t owning transaction
-	 * @param item item to lock
+	 * @param items items to lock
+	 * @param modes modes to lock items in
 	 */
 	public Lock(Transaction t, String[] items, String[] modes) {
 		this.t = t;

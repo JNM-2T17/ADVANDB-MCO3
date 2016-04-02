@@ -32,6 +32,8 @@ public abstract class AbstractTransaction implements Transaction {
 	/**
 	 * basic constructor
 	 * @param id transaction id
+	 * @param isolevel isolation level
+	 * @throws SQLException when connection cannot be acquired
 	 */
 	public AbstractTransaction(int id,IsoLevel isolevel) throws SQLException {
 		transactionId = id;
@@ -63,6 +65,9 @@ public abstract class AbstractTransaction implements Transaction {
 	/**
 	 * basic constructor
 	 * @param id transaction id
+	 * @param isolevel isolation level
+	 * @param abort whether to abort this transaction eventually
+	 * @throws SQLException when connection cannot be acquired
 	 */
 	public AbstractTransaction(int id,IsoLevel isolevel,int abort) throws SQLException {
 		transactionId = id;
