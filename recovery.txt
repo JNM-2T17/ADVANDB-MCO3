@@ -1,660 +1,0 @@
-1 start
-2 start
-3 start
-8 start
-5 start
-6 start
-4 start
-7 start
-8 abort
-1 commit
-8 start
-2hpq_alpval=1000val=2000
-2 commit
-8hpq_alpval=1000val=2000
-8 commit
-6 abort
-6 start
-5 commit
-4 abort
-6hpq_alpval=1000val=2000
-7 commit
-6 commit
-4 start
-3 commit
-4hpq_alpval=1000val=2000
-4 commit
-8 start
-6 start
-5 start
-7 start
-4 start
-3 start
-2 start
-1 start
-8hpq_alpval=1000val=2000
-8 commit
-5 abort
-5 start
-7 abort
-7 start
-6hpq_alpval=1000val=2000
-7 commit
-6 commit
-2 abort
-5 commit
-2 start
-2hpq_alpval=1000val=2000
-4hpq_alpval=1000val=2000
-2 commit
-4 commit
-1 commit
-3 commit
-CHECKPOINT 
-8 start
-2 start
-1 start
-5 start
-3 start
-7 start
-4 start
-6 start
-5 abort
-5 start
-2 abort
-2 start
-8hpq_alpval=1000val=2000
-8 commit
-2hpq_alpval=1000val=2000
-5 commit
-2 commit
-1 commit
-3 commit
-7 commit
-6 abort
-6 start
-6hpq_alpval=1000val=2000
-6 commit
-4hpq_alpval=1000val=2000
-4 commit
-1 start
-6 start
-8 start
-2 start
-7 start
-4 start
-5 start
-3 start
-3 abort
-3 start
-4 abort
-1 start
-3 start
-4 start
-5 start
-6 start
-2 start
-7 start
-8 start
-6 abort
-6 start
-4 abort
-4hpq_alpval=1000val=2000
-4 start
-5 commit
-3 commit
-7 commit
-1 commit
-8 abort
-8 start
-6 abort
-6 start
-6hpq_alpval=1000val=2000
-4hpq_alpval=1000val=2000
-8hpq_alpval=1000val=2000
-4 commit
-6 commit
-8 commit
-2hpq_alpval=1000val=2000
-2 commit
-1 start
-3 start
-4 start
-5 start
-6 start
-2 start
-7 start
-8 start
-6 abort
-6 start
-4 abort
-7 start
-6 start
-4 start
-8 start
-5 start
-1 start
-2 start
-3 start
-3 abort
-3 start
-2 abort
-7 start
-5 start
-6 start
-8 start
-1 start
-3 start
-2 start
-4 start
-4 abort
-4 start
-5 commit
-3 commit
-1 commit
-4hpq_alpval=1000val=2000
-7 commit
-4 commit
-6hpq_alpval=1000val=2000
-6 commit
-8hpq_alpval=1000val=2000
-8 commit
-2hpq_alpval=1000val=2000
-2 commit
-CHECKPOINT 
-1 start
-3 start
-2 start
-4 start
-5 start
-6 start
-8 start
-7 start
-5 commit
-2hpq_alpval=1000val=2000
-7 commit
-1 commit
-6hpq_alpval=1000val=2000
-8hpq_alpval=1000val=2000
-3 commit
-4hpq_alpval=1000val=2000
-8 commit
-6 commit
-2 commit
-4 commit
-8 start
-6 start
-4 start
-5 start
-7 start
-3 start
-2 start
-1 start
-3 commit
-7 commit
-5 commit
-8hpq_alpval=1000val=2000
-8 commit
-2hpq_alpval=1000val=2000
-2 commit
-4hpq_alpval=1000val=2000
-4 commit
-6hpq_alpval=1000val=2000
-6 commit
-1 commit
-8 start
-6 start
-7 start
-1 start
-5 start
-2 start
-4 start
-3 start
-2hpq_alpval=1000val=2000
-3 commit
-5 commit
-7 commit
-1 commit
-6hpq_alpval=1000val=2000
-4hpq_alpval=1000val=2000
-2 commit
-6 commit
-4 commit
-8hpq_alpval=1000val=2000
-8 commit
-1 start
-1hpq_alpval=1000val=2000
-1 abort
-CHECKPOINT 
-CHECKPOINT 
-1 start
-1hpq_alpval=1000val=2000
-1 abort
-CHECKPOINT 
-1 start
-1hpq_alpval=1000val=2000
-1 abort
-1 start
-1hpq_alpval=1000val=2000
-1 abort
-1 start
-1hpq_alpval=1000val=2000
-1 abort
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-1 start
-1hpq_alpval=1000val=2000
-1 abort
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-1 start
-1hpq_alpval=1000val=2000
-1 abort
-CHECKPOINT 
-CHECKPOINT 
-1 abort
-CHECKPOINT 
-1 start
-1hpq_alpval=1000val=2000
-1 commit
-CHECKPOINT 
-2 start
-7 start
-4 start
-5 start
-3 start
-1 start
-8 start
-6 start
-8hpq_alpval=1000val=2000
-8 commit
-4hpq_alpval=1000val=2000
-4 commit
-2hpq_alpval=1000val=2000
-2 commit
-6hpq_alpval=1000val=2000
-6 commit
-3 commit
-1 commit
-7 commit
-5 commit
-CHECKPOINT 
-CHECKPOINT 
-1 start
-8 start
-7 start
-6 start
-5 start
-4 start
-9 start
-3 start
-2 start
-9hpq_alpval=1000val=2000
-1 commit
-7 commit
-5 commit
-9 commit
-9 abort
-4hpq_alpval=1000val=2000
-4 commit
-2hpq_alpval=1000val=2000
-2 commit
-6hpq_alpval=1000val=2000
-6 commit
-8hpq_alpval=1000val=2000
-8 commit
-3 commit
-CHECKPOINT 
-CHECKPOINT 
-9 start
-8 start
-7 start
-6 start
-5 start
-4 start
-3 start
-2 start
-1 start
-2hpq_alpval=1000val=2000
-2 commit
-9hpq_alpval=1000val=2000
-9 commit
-1 start
-2 start
-3 start
-4 start
-6 start
-5 start
-7 start
-8 start
-1 commit
-2hpq_alpval=1000val=2000
-2 commit
-5 abort
-5 start
-7 abort
-7 start
-6 abort
-6 start
-4 abort
-4 start
-6hpq_alpval=1000val=2000
-3 commit
-4hpq_alpval=1000val=2000
-7 commit
-5 commit
-4 commit
-6 commit
-8hpq_alpval=1000val=2000
-8 commit
-1 start
-2 start
-1 commit
-2hpq_alpval=1000val=2000
-2 commit
-3 start
-3 commit
-CHECKPOINT 
-1 start
-2 start
-3 start
-4 start
-7 start
-5 start
-9 start
-8 start
-6 start
-7 commit
-4hpq_alpval=1000val=2000
-4 commit
-6hpq_alpval=1000val=2000
-6 commit
-9hpq_alpval=1000val=2000
-9 commit
-4 start
-1 start
-2 start
-3 start
-5 start
-6 start
-3 commit
-7 start
-9 start
-8 start
-6hpq_alpval=1000val=2000
-6 commit
-4hpq_alpval=1000val=2000
-4 commit
-2hpq_alpval=1000val=2000
-2 commit
-8hpq_alpval=1000val=2000
-8 commit
-9hpq_alpval=1000val=2000
-9 commit
-8 start
-2 start
-3 start
-4 start
-5 start
-1 start
-6 start
-9 start
-7 start
-4hpq_alpval=1000val=2000
-4 commit
-8hpq_alpval=1000val=2000
-8 commit
-9hpq_alpval=1000val=2000
-9 commit
-5 start
-2 start
-3 start
-1 start
-4 start
-6 start
-7 start
-8 start
-9 start
-9hpq_alpval=1000val=2000
-9 commit
-9 abort
-2hpq_alpval=1000val=2000
-2 commit
-8hpq_alpval=1000val=2000
-8 commit
-4hpq_alpval=1000val=2000
-4 commit
-6hpq_alpval=1000val=2000
-6 commit
-3 commit
-1 commit
-7 commit
-5 commit
-9 start
-8 start
-5 start
-6 start
-7 start
-4 start
-3 start
-2 start
-1 start
-3 commit
-8hpq_alpval=1000val=2000
-8 commit
-4hpq_alpval=1000val=2000
-4 commit
-9hpq_alpval=1000val=2000
-9 commit
-9 abort
-6hpq_alpval=1000val=2000
-6 commit
-2hpq_alpval=1000val=2000
-2 commit
-5 commit
-1 commit
-7 commit
-1 start
-2 start
-3 start
-4 start
-5 start
-6 start
-7 start
-8 start
-9 start
-4hpq_alpval=1000val=2000
-4 commit
-6hpq_alpval=1000val=2000
-6 commit
-8hpq_alpval=1000val=2000
-8 commit
-2hpq_alpval=1000val=2000
-2 commit
-9hpq_alpval=1000val=2000
-9 commit
-9 abort
-5 commit
-1 commit
-3 commit
-7 commit
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-1 start
-1 commit
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-CHECKPOINT 
-1 start
-2 start
-1 commit
-2 start
-2hpq_alpnullnull
-2 commit
-1 start
-3 start
-2 start
-4 start
-5 start
-6 start
-7 start
-9 start
-8 start
-1 commit
-5 commit
-3 commit
-7 commit
-4hpq_alpnullnull
-4 commit
-9hpq_alpnullnull
-9 commit
-9 abort
-2hpq_alpnullnull
-2 commit
-6hpq_alpnullnull
-6 commit
-8hpq_alpnullnull
-8 commit
-1 start
-1 commit
-1 start
-1 commit
-2 start
-2hpq_alpnullnull
-2 commit
-2 start
-2hpq_alpnullnull
-2 commit
-2 start
-2hpq_alpnullnull
-2 commit
-2 start
-2hpq_alpnullnull
-2 commit
-2 start
-2hpq_alpnullnull
-2 commit
-2 start
-2hpq_alpnullnull
-2 commit
-1 start
-1 commit
-2 start
-2 commit
-2 start
-2hpq_alpnullnull
-2 commit
-3 start
-1 start
-1 commit
-2 start
-2hpq_alpnullnull
-2 commit
-3 start
-3 commit
-2 start
-2hpq_alpnullnull
-2 commit
-1 start
-1 commit
-1 start
-1 commit
-2 start
-2hpq_alpnullnull
-2 commit
-2 start
-2hpq_alpnullnull
-2 commit
-2 start
-2hpq_alpnullnull
-2 commit
-2 start
-2hpq_alpnullnull
-2 commit
-3 start
-3 commit
-3 start
-2 start
-3 commit
-4 start
-2 commit
-4hpq_alpnullnull
-4 commit
-2 start
-2hpq_alpnullnull
-2 commit
-3 start
-3 commit
-2 start
-1 start
-1 commit
-2hpq_alpnullnull
-2 commit
-4 start
-1 start
-2 start
-4hpq_alpnullnull
-4 commit
-2hpq_alpnullnull
-2 commit
-1 commit
-2 start
-2hpq_alpnullnull
-2 commit
-1 start
-1 commit
-2 start
-2 abort
-2 start
-2 abort
-3 start
-2 start
-3 abort
-2 commit
-3 start
-4 start
-4hpq_alpnullnull
-4 commit
-5 start
-6 start
-3 abort
-5 abort
-6hpq_alpnullnull
-6 commit
-2 start
-1 start
-2hpq_alpnullnull
-2 commit
-2 start
-1 start
-2hpq_alpnullnull
-2 commit
-1 start
-1 commit
-2 start
-2hpq_alpnullnull
-2 commit
-3 start
-4 start
-3 commit
-1 start
-3 start
-1 commit
-3 commit
-2 start
-2 commit
-2 start
-2 abort
