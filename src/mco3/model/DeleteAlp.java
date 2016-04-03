@@ -11,7 +11,7 @@ public class DeleteAlp extends AbstractTransaction {
 		buildTransaction(alpid);
 	}
 
-	public DeleteAlp(int id, IsoLevel isolation,int alpid,int abort) throws SQLException {
+	public DeleteAlp(int id, IsoLevel isolation,int abort,int alpid) throws SQLException {
 		super(id,isolation,abort);
 
 		buildTransaction(alpid);
@@ -37,5 +37,9 @@ public class DeleteAlp extends AbstractTransaction {
 	public void releaseLocks() {
 		super.releaseLocks();
 		LockManager.instance().unlock(this,"hpq_alp");
+	}
+
+	public String toString() {
+		return "Delete Land Transaction";
 	}
 }

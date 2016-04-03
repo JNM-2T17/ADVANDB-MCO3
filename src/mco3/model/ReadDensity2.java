@@ -4,19 +4,19 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class ReadDensity2 extends AbstractTransaction {
-	public ReadDensity2(int id, IsoLevel isolation) throws SQLException {
+	public ReadDensity2(int id, IsoLevel isolation,int tenur) throws SQLException {
 		super(id,isolation);
 
-		buildTransaction();
+		buildTransaction(tenur);
 	}
 
-	public ReadDensity2(int id, IsoLevel isolation, int abort) throws SQLException {
+	public ReadDensity2(int id, IsoLevel isolation, int abort,int tenur) throws SQLException {
 		super(id,isolation,abort);
 
-		buildTransaction();
+		buildTransaction(tenur);
 	}
 
-	public void buildTransaction() {
+	public void buildTransaction(int tenur) {
 		transaction.add(new Lock(this,new String[] {
 			"hpq_alp",
 			"hpq_hh"
@@ -44,5 +44,9 @@ public class ReadDensity2 extends AbstractTransaction {
 		super.releaseLocks();
 		LockManager.instance().unlock(this,"hpq_hh");
 		LockManager.instance().unlock(this,"hpq_alp");
+	}
+
+	public String toString() {
+		return "Land OLAP Read Transaction";
 	}
 }

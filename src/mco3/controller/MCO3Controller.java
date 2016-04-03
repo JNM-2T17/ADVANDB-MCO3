@@ -16,10 +16,12 @@ public class MCO3Controller {
 	private ConnectionManager cm;
 
 	private MainFrame mf;
-	private ConcurrencyPanel cPanel;
-	private MCO3Menu menu;
+	// private ConcurrencyPanel cPanel;
+	private ExecutePanel ePanel;
+	// private MCO3Menu menu;
 	private ConnectScreen cFrame;
 	private ConStatusPanel csPanel;
+	private AddTransactionPanel atPanel;
 	private boolean connectOpen;
 	private DummyManager dm;
 
@@ -35,8 +37,8 @@ public class MCO3Controller {
 		csPanel = new ConStatusPanel(schema);
 		mf.setSouth(csPanel);
 
-		menu = new MCO3Menu(this);
-		mf.setJMenuBar(menu);
+		// menu = new MCO3Menu(this);
+		// mf.setJMenuBar(menu);
 
 		// cm = CheckpointManager.instance(30000);
 		// cm.start();
@@ -45,15 +47,24 @@ public class MCO3Controller {
 
 		tranList = new ArrayList<Transaction>();
 
-		cPanel = new ConcurrencyPanel(tranList,this);
-		mf.setMain(cPanel);
+		// cPanel = new ConcurrencyPanel(tranList,this);
+		// mf.setMain(cPanel);
+		ePanel = new ExecutePanel(this,tranList);
+		atPanel = new AddTransactionPanel(this);
+		mf.setMain(ePanel);
 
-		setMain(ADD);
+		// setMain(ADD);
 		(new Thread() {
 			public void run() {
 				cm.autoConnect();
 			}
 		}).start();
+	}
+
+	public void addTransaction(Transaction t) {
+		tranList.add(t);
+		ePanel.update();
+		setMain(RUN);
 	}
 
 	public String schema() {
@@ -97,31 +108,53 @@ public class MCO3Controller {
 	public void setMain(int value) {
 		switch(value) {
 			case ADD:
-				IsoLevel[] isos = new IsoLevel[] {
-					IsoLevel.READ_UNCOMMITTED,
-					IsoLevel.READ_COMMITTED,
-					IsoLevel.READ_REPEATABLE,
-					IsoLevel.SERIALIZABLE
-				};
+				// IsoLevel[] isos = new IsoLevel[] {
+				// 	IsoLevel.READ_UNCOMMITTED,
+				// 	IsoLevel.READ_COMMITTED,
+				// 	IsoLevel.READ_REPEATABLE,
+				// 	IsoLevel.SERIALIZABLE
+				// };
 
-				int i = 1;
+				// int i = 1;
 
-				try {
-					for( int j = 0; j < isos.length; j++, i += 2 ) {
-						// tranList.add(new ReadDensity2(i,isos[j]));
-						tranList.add(new EditAlp(i + 1,isos[j],11328,10));
-					}
-					// tranList.add(new EditAlp(9,IsoLevel.READ_UNCOMMITTED,11328,10,AbstractTransaction.ABORT_AFTER));
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-				cPanel.update();
-				cm.temp = false;
+				// try {
+				// 	for( int j = 0; j < isos.length; j++, i += 2 ) {
+				// 		// tranList.add(new ReadDensity2(i,isos[j]));
+				// 		tranList.add(new EditAlp(i + 1,isos[j],11328,10));
+				// 	}
+				// 	// tranList.add(new EditAlp(9,IsoLevel.READ_UNCOMMITTED,11328,10,AbstractTransaction.ABORT_AFTER));
+				// } catch(Exception e) {
+				// 	e.printStackTrace();
+				// }
+				// // cPanel.update();
+				// ePanel.update();
+				// cm.temp = false;
+				mf.setMain(atPanel);
 				break;
 			case RUN:
+				mf.setMain(ePanel);
 				break;
 			default:
 		}
+	}
+
+	public void syncAll() {
+		switch(schema) {
+			case "db_hpq":
+				cm.sendMessage("db_hpq_marinduque","RUN  0" + (char)30 + (char)4);
+				cm.sendMessage("db_hpq_palawan","RUN  0" + (char)30 + (char)4);
+				break;
+			case "db_hpq_marinduque":
+				cm.sendMessage("db_hpq","RUN  0" + (char)30 + (char)4);
+				cm.sendMessage("db_hpq_palawan","RUN  0" + (char)30 + (char)4);
+				break;
+			case "db_hpq_palawan":
+				cm.sendMessage("db_hpq","RUN  0" + (char)30 + (char)4);
+				cm.sendMessage("db_hpq_marinduque","RUN  0" + (char)30 + (char)4);
+				break;
+			default:
+		}
+		runAll();
 	}
 
 	public void runAll() {
@@ -139,12 +172,14 @@ public class MCO3Controller {
 				t.join();
 				if( tranList.size() > 0 ) {
 					tranList.remove(0);
-					cPanel.update();
+					ePanel.update();
+					// cPanel.update();
 				}
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
 		}
+		ePanel.finishPrompt();
 	}
 
 	public void connectScreen() {
@@ -174,7 +209,8 @@ public class MCO3Controller {
 		}
 		if( model.isFinished()) {
 			tranList.remove(model);
-			cPanel.update();
+			// cPanel.update();
+			ePanel.update();
 		}
 		(new Thread() {
 			public void run() {

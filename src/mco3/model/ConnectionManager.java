@@ -234,17 +234,24 @@ public class ConnectionManager {
 												, final String message) {
 		System.out.println("RECEIVED: " + tag + " " + header + " " + id + " " + message);
 		switch(header) {
+			case "RUN":
+				(new Thread() {
+					public void run() {
+						control.runAll();
+					}
+				}).start();
+				break;
 			case "BEGIN":
 				// System.out.println("RECEIVED: " + tag + " " + header + " " + id + " " + message);
 		
-				if( !temp ) {
-					temp = true;
-					(new Thread() {
-						public void run() {
-							control.runAll();
-						}
-					}).start();
-				}
+				// if( !temp ) {
+				// 	temp = true;
+				// 	(new Thread() {
+				// 		public void run() {
+				// 			control.runAll();
+				// 		}
+				// 	}).start();
+				// }
 				control.addDummy(id + tag,id,message);
 				String pending = pendingLocks.get(id + tag);
 				if( pending != null) {

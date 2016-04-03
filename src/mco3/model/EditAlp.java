@@ -11,7 +11,7 @@ public class EditAlp extends AbstractTransaction {
 		buildTransaction(alpid,increment);
 	}
 
-	public EditAlp(int id, IsoLevel isolation,int alpid,int increment,int abort) throws SQLException {
+	public EditAlp(int id, IsoLevel isolation,int abort,int alpid,int increment) throws SQLException {
 		super(id,isolation,abort);
 
 		buildTransaction(alpid,increment);
@@ -39,5 +39,9 @@ public class EditAlp extends AbstractTransaction {
 		LockManager.instance().unlock(this,"hpq_hh");
 		LockManager.instance().unlock(this,"hpq_crop");
 		LockManager.instance().unlock(this,"hpq_alp");
+	}
+
+	public String toString() {
+		return "Edit Land Transaction";
 	}
 }
