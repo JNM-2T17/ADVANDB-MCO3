@@ -120,14 +120,11 @@ public class ReadAction implements DBAction {
 								}
 								System.out.println(ps);
 								rs1 =ps.executeQuery();
-
-								//Read from self
-								ps = con.prepareStatement(query);
-								for(int i = 0; i < params.length; i++) {
-									ps.setString(i + 1, params[i]);
-								}
-								System.out.println(ps);
-								rs2 = ps.executeQuery();
+								ReadResult rr1 = new ReadResult(columns,rs1);
+								// new ResultsFrame(rr1);
+								// new ResultsFrame(curr);
+								curr = rr1.merge(curr,new int[] {0,1});
+								new ResultsFrame(curr);
 							}
 						}catch(Exception e){
 							e.printStackTrace();
@@ -172,22 +169,18 @@ public class ReadAction implements DBAction {
 						    t.setStatus(Transaction.WAITING);
 						    wait();
 						    t.setStatus(Transaction.RUNNING);
-						    if(status){
-						    	ps = con.prepareStatement(query);
-							    for(int i = 0; i < params.length; i++) {
-								    ps.setString(i + 1, params[i]);
-							    }
-							    System.out.println(ps);
-							    rs1 =ps.executeQuery();
-
-							    //Read from self
-								ps = con.prepareStatement(query);
+						    if(status) {
+						    	//process
+							    ps = con.prepareStatement(query);
 								for(int i = 0; i < params.length; i++) {
 									ps.setString(i + 1, params[i]);
 								}
 								System.out.println(ps);
-								rs2 = ps.executeQuery();
-						    }
+								rs1 = ps.executeQuery();
+								ReadResult rr1 = new ReadResult(columns,rs1);
+								curr = rr1.merge(curr,new int[] {0,1});
+								new ResultsFrame(curr);
+							}
 						}catch(Exception e){
 							e.printStackTrace();
 							t.rollback();
