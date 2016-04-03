@@ -78,6 +78,15 @@ public class DummyManager {
 		}	
 	}
 
+	public ReadResult read(String tag, String query, String[] cols, String[] params) {
+		DummyTransaction dt = dummyMap.get(tag);
+		if( dt != null  ) {
+			return dt.read(query,cols,params);
+		} else {
+			return null;
+		}
+	}
+
 	public void commit(String tag) {
 		DummyTransaction dt = dummyMap.get(tag);
 		if( dt != null  ) {

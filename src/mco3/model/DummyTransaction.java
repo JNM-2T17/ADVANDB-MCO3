@@ -9,8 +9,21 @@ public class DummyTransaction extends AbstractTransaction {
 		super(id,isolation);
 	}
 
-	public void read(String query) {
-
+	public ReadResult read(String query,String[] columns,String[] params) {
+		PreparedStatement ps;
+		try {
+			ps = con.prepareStatement(query);
+			for(int i = 0; i < params.length; i++) {
+				ps.setString(i + 1, params[i]);
+			}
+			System.out.println(ps);
+			ResultSet rs1 = ps.executeQuery();
+			return new ReadResult(columns,rs1);
+		} catch(Exception e) {
+			e.printStackTrace();
+			rollback();
+			return null;
+		}
 	}
 
 	public synchronized void write(String[] query) {

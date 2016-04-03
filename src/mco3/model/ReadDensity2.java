@@ -24,11 +24,22 @@ public class ReadDensity2 extends AbstractTransaction {
 			"READ",
 			"READ"
 		}));
-		transaction.add(new ReadAction(this,"",null,null,new String[] {
-			"hpq_hh",
-			"hpq_alp"
-		}));
-		transaction.add(new ReadAction(this,"",null,null,new String[] {
+		transaction.add(new ReadAction(this
+			,"SELECT wall, roof, COUNT(id) as count, SUM(alp_area) as sum " + 
+			"FROM (SELECT id, wall, roof " + 
+					"FROM hpq_hh " + 
+					"WHERE tenur = ?) H INNER JOIN  " + 
+					"(SELECT hpq_hh_id, alp_area " + 
+					"FROM hpq_alp) A ON H.id = A.hpq_hh_id " + 
+			"GROUP BY wall,roof",new String[] {
+			"wall",
+			"roof",
+			"count",
+			"sum"
+		},new String[] {
+			"" + tenur
+		}
+		,new String[] {
 			"hpq_hh",
 			"hpq_alp"
 		}));

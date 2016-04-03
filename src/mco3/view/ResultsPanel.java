@@ -31,6 +31,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
+import mco3.model.ReadResult;
+
 public class ResultsPanel extends JPanel {
 	
 	public static Connection conn;
@@ -45,50 +47,50 @@ public class ResultsPanel extends JPanel {
 		this.times = times;
 	}
 	
-	public ResultsPanel() throws SQLException {
+	public ResultsPanel(ReadResult rs) {
 		createTablePanel();
 		this.add(tablePane);
+		resultTable(rs);
 	}
+
 	public void createTablePanel()
 	{
 		tablePane = new JPanel();
 	    tablePane.setLayout(new BorderLayout());
 	}
 	
-	public JTable resultTable(ResultSet rs) throws SQLException
+	public void resultTable(ReadResult rs) 
 	{
-		JTable table = new JTable(buildTableModel(rs));
-	    table.setEnabled(false);
+		try {
+			JTable table = new JTable(buildTableModel(rs));
+		    table.setEnabled(false);
 
-	    ColumnsAutoSizer.sizeColumnsToFit(table);
-	    
-	    //an event listener to automatically resize the columns every time data is added or changed in the table, like this
-	    // table.getModel().addTableModelListener(new TableModelListener() {
-	    //     public void tableChanged(TableModelEvent e) {
-	    //         ColumnsAutoSizer.sizeColumnsToFit(table);
-	    //     }
-	    // });
-	    return table;
+		    ColumnsAutoSizer.sizeColumnsToFit(table);
+		    
+		   	tablePane.add(new JScrollPane(table
+		   					,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
+		   					,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED)
+		   				,BorderLayout.CENTER);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
-	
-	public static DefaultTableModel buildTableModel(ResultSet rs)
-	        throws SQLException {
 
-	    ResultSetMetaData metaData = (ResultSetMetaData) rs.getMetaData();
+	public DefaultTableModel buildTableModel(ReadResult rs) {
 
-	    // names of columns
+	     // names of columns
 	    Vector<String> columnNames = new Vector<String>();
-	    int columnCount = metaData.getColumnCount();
-	    for (int column = 1; column <= columnCount; column++) {
-	        columnNames.add(metaData.getColumnName(column));
+	    int columnCount = rs.colCtr();
+	    for (int column = 0; column < columnCount; column++) {
+	        columnNames.add(rs.column(column));
 	    }
 
 	    // data of the table
 	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-	    while (rs.next()) {
+	    for(int i = 0; i < rs.size(); i++ ){
 	        Vector<Object> vector = new Vector<Object>();
-	        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
-	            vector.add(rs.getObject(columnIndex));
+	        for (int j = 0; j < rs.colCtr(); j++) {
+	            vector.add(rs.get(i,rs.column(j)));
 	        }
 	        data.add(vector);
 	    }

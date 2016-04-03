@@ -298,6 +298,12 @@ public class ConnectionManager {
 				actions.get(header + " " + id).wakeUp(message.equals("YES"));
 				actions.remove(header + " " + id);
 				break;
+			case "DATA":
+				System.out.println(message);
+				ReadAction ra = (ReadAction)actions.get(header + " " + id);
+				ra.wakeUp(new ReadResult(message));
+				actions.remove(header + " " + id);
+				break;
 			case "UNLOCK":
 				control.unlock(id);
 				break;
@@ -321,6 +327,13 @@ public class ConnectionManager {
 				if( !isConnected(id) ) {
 					connect(message);
 				}
+				break;
+			case "READ":
+				String[] parts = message.split("" + (char)28);
+				ReadResult rr = control.read(id,parts[0],parts[1].split(",")
+												,parts[2].split(","));
+				sendMessage(tag,"DATA " + id + " " + rr.toString().length() 
+								+ (char)30 + rr.toString() + (char)4);
 				break;
 			default:
 		}

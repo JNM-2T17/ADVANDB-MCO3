@@ -89,6 +89,10 @@ public class MCO3Controller {
 		dm.write(tag,query);
 	}
 
+	public ReadResult read(String tag, String query, String[] cols, String[] params) {
+		return dm.read(tag,query,cols,params);
+	}
+
 	public void unregister(String tag) {
 		dm.unregister(tag);
 	}

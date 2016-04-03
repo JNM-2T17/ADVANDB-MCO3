@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import mco3.controller.MCO3Controller;
+import mco3.view.ResultsFrame;
 
 /**
  * DBAction for reading from the database
@@ -19,6 +20,7 @@ public class ReadAction implements DBAction {
 	private String[] items;
 	private Connection con;
 	private boolean status;
+	private ReadResult curr;
 
 	/**
 	 * basic constructor
@@ -69,7 +71,8 @@ public class ReadAction implements DBAction {
 						ps.setString(i + 1, params[i]);
 					}
 					System.out.println(ps);
-					ps.executeQuery();
+					rs1 = ps.executeQuery();
+					new ResultsFrame(new ReadResult(columns,rs1));
 				} catch(Exception e) {
 					e.printStackTrace();
 					t.rollback();
@@ -90,12 +93,7 @@ public class ReadAction implements DBAction {
 				      wait();
 				      t.setStatus(Transaction.RUNNING);
 				      if(status){
-				      	ps = con.prepareStatement(query);
-					    for(int i = 0; i < params.length; i++) {
-						    ps.setString(i + 1, params[i]);
-					    }
-					    System.out.println(ps);
-					    rs1 = ps.executeQuery();
+				      	new ResultsFrame(curr);
 				      }
 				    }catch(Exception e){
 					    e.printStackTrace();
@@ -156,14 +154,8 @@ public class ReadAction implements DBAction {
 					    wait();
 					    t.setStatus(Transaction.RUNNING);
 					    if(status){
-					    	ps = con.prepareStatement(query);
-						    for(int i = 0; i < params.length; i++) {
-							    ps.setString(i + 1, params[i]);
-						    }
-						    System.out.println(ps);
-
-						    rs1 = ps.executeQuery();
-					    }
+					    	new ResultsFrame(curr);
+				      	}
 					}catch(Exception e){
 						e.printStackTrace();
 						t.rollback();
@@ -231,6 +223,12 @@ public class ReadAction implements DBAction {
 
 	public synchronized void wakeUp(boolean status) {
 		this.status = status;
+		notifyAll();
+	}
+
+	public synchronized void wakeUp(ReadResult rr) {
+		status = true;
+		this.curr = rr;
 		notifyAll();
 	}
 }
