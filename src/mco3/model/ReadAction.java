@@ -94,6 +94,7 @@ public class ReadAction implements DBAction {
 				      t.setStatus(Transaction.RUNNING);
 				      if(status){
 				      	new ResultsFrame(curr);
+				      	return;
 				      }
 				    }catch(Exception e){
 					    e.printStackTrace();
@@ -102,40 +103,37 @@ public class ReadAction implements DBAction {
 				    //Display Results
 				}
 				//SEND READ TO OTHER NODE
-				else{//else if not connected or failed 
-				   if(cm.sendMessage("db_hpq_palawan","READ " 
+				if(cm.sendMessage("db_hpq_palawan","READ " 
 										+ t.transactionId() 
 										+ MCO3Controller.schema + " " 
 										+ message.length() + (char)30 + message
 										+ (char)4,"DATA " + t.transactionId()+MCO3Controller.schema,this)){
-				   		try{
-						    t.setStatus(Transaction.WAITING);
-						    wait();
-						    t.setStatus(Transaction.RUNNING);
-						    if(status) {
-						    	//process
-							    ps = con.prepareStatement(query);
-								for(int i = 0; i < params.length; i++) {
-									ps.setString(i + 1, params[i]);
-								}
-								System.out.println(ps);
-								rs1 =ps.executeQuery();
-								ReadResult rr1 = new ReadResult(columns,rs1);
-								// new ResultsFrame(rr1);
-								// new ResultsFrame(curr);
-								curr = rr1.merge(curr,new int[] {0,1});
-								new ResultsFrame(curr);
+			   		try{
+					    t.setStatus(Transaction.WAITING);
+					    wait();
+					    t.setStatus(Transaction.RUNNING);
+					    if(status) {
+					    	//process
+						    ps = con.prepareStatement(query);
+							for(int i = 0; i < params.length; i++) {
+								ps.setString(i + 1, params[i]);
 							}
-						}catch(Exception e){
-							e.printStackTrace();
-							t.rollback();
-						}	
-				    }
+							System.out.println(ps);
+							rs1 =ps.executeQuery();
+							ReadResult rr1 = new ReadResult(columns,rs1);
+							// new ResultsFrame(rr1);
+							// new ResultsFrame(curr);
+							curr = rr1.merge(curr,new int[] {0,1});
+							new ResultsFrame(curr);
+						}
+					}catch(Exception e){
+						e.printStackTrace();
+						t.rollback();
+					}	
+			    }
 				      //if success store temporary results object
 				    //get union of results
 	           	   //display
-				}
-				
 				break;
 			case "db_hpq_palawan":
 				//try sending to central READ <this.id> message.length() + (char)30 + message + (char)4
@@ -152,6 +150,7 @@ public class ReadAction implements DBAction {
 					    t.setStatus(Transaction.RUNNING);
 					    if(status){
 					    	new ResultsFrame(curr);
+					    	return;
 				      	}
 					}catch(Exception e){
 						e.printStackTrace();
@@ -159,36 +158,31 @@ public class ReadAction implements DBAction {
 					}	
 				}
 				//SEND READ TO OTHER NODE
-				else{//else if not connected or failed
-					if(cm.sendMessage("db_hpq_marinduque","READ " 
+				if(cm.sendMessage("db_hpq_marinduque","READ " 
 										+ t.transactionId() 
 										+ MCO3Controller.schema + " " 
 										+ message.length() + (char)30 + message
 										+ (char)4,"DATA " +t.transactionId()+MCO3Controller.schema,this)){
-						try{
-						    t.setStatus(Transaction.WAITING);
-						    wait();
-						    t.setStatus(Transaction.RUNNING);
-						    if(status) {
-						    	//process
-							    ps = con.prepareStatement(query);
-								for(int i = 0; i < params.length; i++) {
-									ps.setString(i + 1, params[i]);
-								}
-								System.out.println(ps);
-								rs1 = ps.executeQuery();
-								ReadResult rr1 = new ReadResult(columns,rs1);
-								curr = rr1.merge(curr,new int[] {0,1});
-								new ResultsFrame(curr);
+					try{
+					    t.setStatus(Transaction.WAITING);
+					    wait();
+					    t.setStatus(Transaction.RUNNING);
+					    if(status) {
+					    	//process
+						    ps = con.prepareStatement(query);
+							for(int i = 0; i < params.length; i++) {
+								ps.setString(i + 1, params[i]);
 							}
-						}catch(Exception e){
-							e.printStackTrace();
-							t.rollback();
-						}	
-					}
-				      //if success store temporary results object
-				    //get union of results
-				   //display
+							System.out.println(ps);
+							rs1 = ps.executeQuery();
+							ReadResult rr1 = new ReadResult(columns,rs1);
+							curr = rr1.merge(curr,new int[] {0,1});
+							new ResultsFrame(curr);
+						}
+					}catch(Exception e){
+						e.printStackTrace();
+						t.rollback();
+					}	
 				}
 				break;
 			default:

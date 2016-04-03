@@ -21,7 +21,6 @@ public class ConnectionManager {
 	private HashMap<String,Socket> sockets;
 	private HashMap<String,DBAction> actions;
 	private HashMap<String,String> pendingLocks;
-	private ArrayList<String> actKeys;
 	private Receiver r;
 	private ConStatusPanel csPanel;
 	private boolean[] status;
@@ -36,7 +35,6 @@ public class ConnectionManager {
 		sockets = new HashMap<String,Socket>();
 		actions = new HashMap<String,DBAction>();
 		pendingLocks = new HashMap<String,String>();
-		actKeys = new ArrayList<String>();
 		this.schema = control.schema;
 		status = new boolean[3];
 		switch(schema) {
@@ -183,7 +181,8 @@ public class ConnectionManager {
 				break;	
 			default:
 		}
-		for( String s : actKeys ) {
+		String[] keys = actions.keySet().toArray(new String[0]);
+		for( String s : keys ) {
 			actions.get(s).wakeUp(false);
 			actions.remove(s);
 		}
