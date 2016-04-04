@@ -7,6 +7,7 @@ import mco3.controller.MCO3Controller;
  */
 public class CommitAction implements DBAction {
 	private Transaction t;
+	private boolean status;
 
 	/**
 	 * basic constructor
@@ -25,6 +26,7 @@ public class CommitAction implements DBAction {
 		} else if( t.abortStatus() == AbstractTransaction.FAIL_AFTER ) {
 			System.exit(0);
 		} else {
+			status = true;
 			// LogManager.instance().writeCommit(t);
 			ConnectionManager cm = ConnectionManager.instance();
 			switch(MCO3Controller.schema) {
@@ -37,6 +39,9 @@ public class CommitAction implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
+							if( !status ) {
+								return;
+							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
@@ -53,6 +58,9 @@ public class CommitAction implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
+							if( !status ) {
+								return;
+							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
@@ -90,6 +98,9 @@ public class CommitAction implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
+							if( !status ) {
+								return;
+							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
@@ -106,6 +117,9 @@ public class CommitAction implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
+							if( !status ) {
+								return;
+							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
@@ -143,6 +157,9 @@ public class CommitAction implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
+							if( !status ) {
+								return;
+							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
@@ -159,6 +176,9 @@ public class CommitAction implements DBAction {
 											 + MCO3Controller.schema,this);
 						try {
 							wait();
+							if( !status ) {
+								return;
+							}
 						} catch(Exception e) {
 							e.printStackTrace();
 						}
@@ -197,10 +217,10 @@ public class CommitAction implements DBAction {
 	}
 
 	public synchronized void wakeUp(boolean status) {
-		if( status ) {
-			notifyAll();
-		} else {
+		this.status = status;
+		if( !status ) {
 			t.rollback();
 		}
+		notifyAll();
 	}
 }
