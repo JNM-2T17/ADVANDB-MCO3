@@ -37,8 +37,7 @@ public class DummyManager {
 	}
 
 	public void unregister(String tag) {
-		String[] temp = new String[0];
-		dummyMap.keySet().toArray(temp);
+		String[] temp = dummyMap.keySet().toArray(new String[0]);
 
 		for( String s : temp ) {
 			if( s.endsWith(tag) ) {
