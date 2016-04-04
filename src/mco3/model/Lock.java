@@ -55,7 +55,9 @@ public class Lock implements DBAction {
 					PreparedStatement ps 
 						= t.getConnection().prepareStatement(lock);
 					// System.out.println(ps);
+					t.setStatus(Transaction.WAITING);
 					ps.execute();
+					t.setStatus(Transaction.RUNNING);
 					ps.close();
 					if( isRead) {
 						return;
@@ -140,7 +142,9 @@ public class Lock implements DBAction {
 					
 					ps = t.getConnection().prepareStatement(lock);
 					// System.out.println(ps);
+					t.setStatus(Transaction.WAITING);
 					ps.execute();
+					t.setStatus(Transaction.RUNNING);
 					ps.close();
 					if( status && isRead ) {
 						return;
@@ -228,7 +232,9 @@ public class Lock implements DBAction {
 
 					ps = t.getConnection().prepareStatement(lock);
 					// System.out.println(ps);
+					t.setStatus(Transaction.WAITING);
 					ps.execute();
+					t.setStatus(Transaction.RUNNING);
 					ps.close();
 					break;
 				default:
