@@ -1,7 +1,17 @@
-ALTER TABLE hpq_hh
+ALTER TABLE db_hpq.hpq_hh
 	ADD INDEX hhidx_2(id),
     ADD INDEX hhidx_3(tenur);
-ALTER TABLE hpq_alp
+ALTER TABLE db_hpq.hpq_alp
+	ADD INDEX alpidx_1(hpq_hh_id);
+ALTER TABLE db_hpq_marinduque.hpq_hh
+	ADD INDEX hhidx_2(id),
+    ADD INDEX hhidx_3(tenur);
+ALTER TABLE db_hpq_marinduque.hpq_alp
+	ADD INDEX alpidx_1(hpq_hh_id);
+ALTER TABLE db_hpq_palawan.hpq_hh
+	ADD INDEX hhidx_2(id),
+    ADD INDEX hhidx_3(tenur);
+ALTER TABLE db_hpq_palawan.hpq_alp
 	ADD INDEX alpidx_1(hpq_hh_id);
 DELETE FROM db_hpq_marinduque.hpq_hh WHERE id = 407001;
 DELETE FROM db_hpq.hpq_hh WHERE id = 407001 aND wall = 4 and roof = 1;
