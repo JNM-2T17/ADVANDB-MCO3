@@ -42,6 +42,7 @@ public class DummyManager {
 		for( String s : temp ) {
 			if( s.endsWith(tag) ) {
 				dummyMap.get(s).rollback();
+				dummyMap.remove(s);
 			}
 		}
 	}
@@ -67,12 +68,10 @@ public class DummyManager {
 		}	
 	}
 
-	public void write(String tag,String[] query) {
+	public synchronized void write(String tag,String[] query) {
 		DummyTransaction dt = dummyMap.get(tag);
 		if( dt != null  ) {
-			// if( tag.startsWith("9")) {
-			// 	System.out.println(tag + " IS WRITING " + query[0]);
-			// }
+			System.out.println(tag + " IS WRITING " + query[0]);
 			dt.write(query);
 		}	
 	}
@@ -86,7 +85,7 @@ public class DummyManager {
 		}
 	}
 
-	public void commit(String tag) {
+	public synchronized void commit(String tag) {
 		DummyTransaction dt = dummyMap.get(tag);
 		if( dt != null  ) {
 			dt.commit();
@@ -94,12 +93,10 @@ public class DummyManager {
 		}	
 	}
 
-	public void abort(String tag) {
+	public synchronized void abort(String tag) {
 		DummyTransaction dt = dummyMap.get(tag);
 		if( dt != null  ) {
-			// if( tag.startsWith("9")) {
-			// 	System.out.println(tag + " IS ABORTING");
-			// }
+			System.out.println(tag + " IS ABORTING");
 			dt.rollback();
 			dummyMap.remove(tag);
 		}	

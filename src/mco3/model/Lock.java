@@ -126,7 +126,10 @@ public class Lock implements DBAction {
 							t.setStatus(Transaction.WAITING);
 							wait();
 							t.setStatus(Transaction.RUNNING);
-							if( isRead) {
+							if( status && isRead ) {
+								return;
+							} else if ( !status && !isRead ) {
+								t.rollback();
 								return;
 							}
 						} catch(Exception e) {

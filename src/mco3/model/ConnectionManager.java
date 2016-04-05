@@ -183,8 +183,10 @@ public class ConnectionManager {
 		}
 		String[] keys = actions.keySet().toArray(new String[0]);
 		for( String s : keys ) {
-			actions.get(s).wakeUp(false);
-			actions.remove(s);
+			if( s.startsWith(tag)) {
+				actions.get(s).wakeUp(false);
+				actions.remove(s);
+			}
 		}
 		csPanel.setModel(status[0],status[1],status[2]);
 		control.unregister(tag);
@@ -215,7 +217,7 @@ public class ConnectionManager {
 				dos.writeBytes(message);
 				dos.flush();
 				System.out.println("Waiting for " + replyHeader);
-				actions.put(replyHeader,dba);
+				actions.put(tag + replyHeader,dba);
 				return true;
 			} catch( Exception e ) {
 				e.printStackTrace();	
@@ -288,20 +290,20 @@ public class ConnectionManager {
 				}
 				break;
 			case "OKLOCK":
-				System.out.println(header + " " + id);
-				actions.get(header + " " + id).wakeUp(true);
-				actions.remove(header + " " + id);
+				System.out.println(tag + header + " " + id);
+				actions.get(tag + header + " " + id).wakeUp(true);
+				actions.remove(tag + header + " " + id);
 				break;
 			case "READY!":
-				System.out.println(header + " " + id);
-				actions.get(header + " " + id).wakeUp(message.equals("YES"));
-				actions.remove(header + " " + id);
+				System.out.println(tag + header + " " + id);
+				actions.get(tag + header + " " + id).wakeUp(message.equals("YES"));
+				actions.remove(tag + header + " " + id);
 				break;
 			case "DATA":
 				System.out.println(message);
-				ReadAction ra = (ReadAction)actions.get(header + " " + id);
+				ReadAction ra = (ReadAction)actions.get(tag + header + " " + id);
 				ra.wakeUp(new ReadResult(message));
-				actions.remove(header + " " + id);
+				actions.remove(tag + header + " " + id);
 				break;
 			case "UNLOCK":
 				control.unlock(id);
