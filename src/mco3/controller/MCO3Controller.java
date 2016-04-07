@@ -112,27 +112,6 @@ public class MCO3Controller {
 	public void setMain(int value) {
 		switch(value) {
 			case ADD:
-				// IsoLevel[] isos = new IsoLevel[] {
-				// 	IsoLevel.READ_UNCOMMITTED,
-				// 	IsoLevel.READ_COMMITTED,
-				// 	IsoLevel.READ_REPEATABLE,
-				// 	IsoLevel.SERIALIZABLE
-				// };
-
-				// int i = 1;
-
-				// try {
-				// 	for( int j = 0; j < isos.length; j++, i += 2 ) {
-				// 		// tranList.add(new ReadDensity2(i,isos[j]));
-				// 		tranList.add(new EditAlp(i + 1,isos[j],11328,10));
-				// 	}
-				// 	// tranList.add(new EditAlp(9,IsoLevel.READ_UNCOMMITTED,11328,10,AbstractTransaction.ABORT_AFTER));
-				// } catch(Exception e) {
-				// 	e.printStackTrace();
-				// }
-				// // cPanel.update();
-				// ePanel.update();
-				// cm.temp = false;
 				mf.setMain(atPanel);
 				break;
 			case RUN:
@@ -175,7 +154,6 @@ public class MCO3Controller {
 			try {
 				t.join();
 				if( tranList.size() > 0 ) {
-					tranList.remove(0);
 					ePanel.update();
 					// cPanel.update();
 				}
@@ -183,7 +161,14 @@ public class MCO3Controller {
 				e.printStackTrace();
 			}
 		}
-		ePanel.finishPrompt();
+		if( tranList.size() > 0 ) {
+			ePanel.finishPrompt();
+		}
+	}
+
+	public void delete(Transaction model) {
+		tranList.remove(model);
+		ePanel.update();
 	}
 
 	public void connectScreen() {

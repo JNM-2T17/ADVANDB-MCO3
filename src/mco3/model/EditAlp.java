@@ -23,10 +23,12 @@ public class EditAlp extends AbstractTransaction {
 		},new String[] {
 			"WRITE"
 		}));
-		transaction.add(new WriteAction(this,"UPDATE hpq_alp SET alp_area = " 
-						+ "alp_area + ? WHERE hpq_hh_id = ?",new String[] {
-			increment + "", alpid + ""
-		},"hpq_alp"));
+		if( abortStatus() != AbstractTransaction.ABORT_AFTER ) {
+			transaction.add(new WriteAction(this,"UPDATE hpq_alp SET alp_area = " 
+							+ "alp_area + ? WHERE hpq_hh_id = ?",new String[] {
+				increment + "", alpid + ""
+			},"hpq_alp"));
+		}
 		transaction.add(new CommitAction(this));
 		transaction.add(new UnlockAction(this,"hpq_alp"));
 	}

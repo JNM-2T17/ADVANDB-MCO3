@@ -95,10 +95,11 @@ public class ExecutePanel extends JPanel implements Updatable {
 		private JLabel typeLabel;
 		private JLabel isolationLabel;
 		private JProgressBar progress;
+		private JButton deleteButton;
 
-		public TranPanel(Transaction model) {
+		public TranPanel(Transaction _model) {
 			super(new FlowLayout(FlowLayout.LEFT));
-			this.model = model;
+			this.model = _model;
 
 			numberLabel = new JLabel("");
 			add(numberLabel);
@@ -112,6 +113,14 @@ public class ExecutePanel extends JPanel implements Updatable {
 			progress = new JProgressBar(0,model.size());
 			progress.setStringPainted(true);
 			add(progress);
+
+			deleteButton = new JButton("Delete");
+			deleteButton.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					control.delete(model);
+				}
+			});
+			add(deleteButton);
 
 			update();
 		}

@@ -36,7 +36,7 @@ public class DummyManager {
 		}
 	}
 
-	public void unregister(String tag) {
+	public synchronized void unregister(String tag) {
 		String[] temp = dummyMap.keySet().toArray(new String[0]);
 
 		for( String s : temp ) {

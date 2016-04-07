@@ -23,10 +23,12 @@ public class DeleteAlp extends AbstractTransaction {
 		},new String[] {
 			"WRITE"
 		}));
-		transaction.add(new WriteAction(this,"DELETE FROM hpq_alp WHERE " 
-											+ "hpq_hh_id = ?",new String[] {
-											alpid + ""
-										},"hpq_alp"));
+		if( abortStatus() != AbstractTransaction.ABORT_AFTER ) {
+			transaction.add(new WriteAction(this,"DELETE FROM hpq_alp WHERE " 
+												+ "hpq_hh_id = ?",new String[] {
+												alpid + ""
+											},"hpq_alp"));
+		}
 		transaction.add(new CommitAction(this));
 		transaction.add(new UnlockAction(this,"hpq_alp"));
 	}
